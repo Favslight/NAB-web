@@ -280,12 +280,29 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$ts__$5b
 ;
 ;
 ;
+const GUEST_USER = {
+    id: 'guest',
+    id_no: 'NAB-GUEST-0000',
+    full_name: 'Guest User',
+    email: 'guest@aibuilders.ng',
+    phone: '',
+    state: 'Lagos',
+    profession: 'Visitor',
+    avatar_url: '',
+    is_member: false,
+    membership_status: 'inactive',
+    referral_code: '',
+    role: 'user',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+};
 const AuthContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createContext"])(undefined);
 function AuthProvider({ children }) {
     const [state, setState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         user: null,
         isAuthenticated: false,
-        isLoading: true
+        isLoading: true,
+        isGuest: false
     });
     const refreshUser = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
         try {
@@ -294,7 +311,8 @@ function AuthProvider({ children }) {
                 setState({
                     user: response.data,
                     isAuthenticated: true,
-                    isLoading: false
+                    isLoading: false,
+                    isGuest: false
                 });
             } else {
                 throw new Error('Failed to fetch user');
@@ -304,7 +322,8 @@ function AuthProvider({ children }) {
             setState({
                 user: null,
                 isAuthenticated: false,
-                isLoading: false
+                isLoading: false,
+                isGuest: false
             });
         }
     }, []);
@@ -335,7 +354,8 @@ function AuthProvider({ children }) {
         setState({
             user,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
+            isGuest: false
         });
     };
     const register = async (data)=>{
@@ -352,7 +372,8 @@ function AuthProvider({ children }) {
         setState({
             user,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
+            isGuest: false
         });
     };
     const logout = async ()=>{
@@ -365,7 +386,8 @@ function AuthProvider({ children }) {
             setState({
                 user: null,
                 isAuthenticated: false,
-                isLoading: false
+                isLoading: false,
+                isGuest: false
             });
             window.location.href = '/login';
         }
@@ -379,6 +401,14 @@ function AuthProvider({ children }) {
                 } : null
             }));
     };
+    const loginAsGuest = ()=>{
+        setState({
+            user: GUEST_USER,
+            isAuthenticated: true,
+            isLoading: false,
+            isGuest: true
+        });
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
         value: {
             ...state,
@@ -386,12 +416,13 @@ function AuthProvider({ children }) {
             register,
             logout,
             updateUser,
-            refreshUser
+            refreshUser,
+            loginAsGuest
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AuthContext.tsx",
-        lineNumber: 111,
+        lineNumber: 144,
         columnNumber: 5
     }, this);
 }

@@ -11,7 +11,25 @@ interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   updateUser: (user: Partial<User>) => void;
   refreshUser: () => Promise<void>;
+  loginAsGuest: () => void;
 }
+
+const GUEST_USER: User = {
+  id: 'guest',
+  id_no: 'NAB-GUEST-0000',
+  full_name: 'Guest User',
+  email: 'guest@aibuilders.ng',
+  phone: '',
+  state: 'Lagos',
+  profession: 'Visitor',
+  avatar_url: '',
+  is_member: false,
+  membership_status: 'inactive',
+  referral_code: '',
+  role: 'user',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user: null,
     isAuthenticated: false,
     isLoading: true,
+    isGuest: false,
   });
 
   const refreshUser = useCallback(async () => {
@@ -30,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           user: response.data,
           isAuthenticated: true,
           isLoading: false,
+          isGuest: false,
         });
       } else {
         throw new Error('Failed to fetch user');
@@ -40,6 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+        isGuest: false,
       });
     }
   }, []);
@@ -49,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token) {
       refreshUser();
     } else {
-      setState(prev => ({ ...prev, isLoading: false }));
+      setState((prev: AuthState) => ({ ...prev, isLoading: false }));
     }
   }, [refreshUser]);
 
@@ -67,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       isAuthenticated: true,
       isLoading: false,
+      isGuest: false,
     });
   };
 
@@ -84,6 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       isAuthenticated: true,
       isLoading: false,
+      isGuest: false,
     });
   };
 
@@ -98,13 +121,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+        isGuest: false,
       });
       window.location.href = '/login';
     }
   };
 
   const updateUser = (user: Partial<User>) => {
-    setState(prev => ({ ...prev, user: prev.user ? { ...prev.user, ...user } : null }));
+    setState((prev: AuthState) => ({ ...prev, user: prev.user ? { ...prev.user, ...user } : null }));
+  };
+
+  const loginAsGuest = () => {
+    setState({
+      user: GUEST_USER,
+      isAuthenticated: true,
+      isLoading: false,
+      isGuest: true,
+    });
   };
 
   return (
@@ -116,6 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         updateUser,
         refreshUser,
+        loginAsGuest,
       }}
     >
       {children}

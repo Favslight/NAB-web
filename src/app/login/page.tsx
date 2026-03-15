@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,8 +19,14 @@ export default function LoginPage() {
     password: '',
   });
   
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
   const router = useRouter();
+
+  const handleGuestLogin = () => {
+    loginAsGuest();
+    toast.success('Welcome! You\'re browsing as a guest.');
+    router.push('/dashboard');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,6 +117,25 @@ export default function LoginPage() {
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
               <ArrowRight className="ml-2" size={18} />
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-midnight-light px-2 text-text">Or</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full border-cyan/50 text-cyan hover:bg-cyan/10 py-6"
+              onClick={handleGuestLogin}
+            >
+              <User className="mr-2" size={18} />
+              Continue as Guest
             </Button>
           </form>
 

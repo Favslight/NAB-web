@@ -1007,6 +1007,10 @@ html {
   border-color: #00d1ff4d;
 }
 
+.border-cyan\/50 {
+  border-color: #00d1ff80;
+}
+
 .border-emerald\/20 {
   border-color: #00ffa633;
 }
@@ -1075,6 +1079,10 @@ html {
 
 .bg-cyan\/10 {
   background-color: #00d1ff1a;
+}
+
+.bg-cyan\/20 {
+  background-color: #00d1ff33;
 }
 
 .bg-cyan\/5 {
@@ -1179,6 +1187,16 @@ html {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.from-cyan\/20 {
+  --tw-gradient-from: #00d1ff33 var(--tw-gradient-from-position);
+  --tw-gradient-to: #00d1ff00 var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .from-emerald {
   --tw-gradient-from: #00ffa6 var(--tw-gradient-from-position);
   --tw-gradient-to: #00ffa600 var(--tw-gradient-to-position);
@@ -1187,6 +1205,10 @@ html {
 
 .to-cyan {
   --tw-gradient-to: #00d1ff var(--tw-gradient-to-position);
+}
+
+.to-emerald\/20 {
+  --tw-gradient-to: #00ffa633 var(--tw-gradient-to-position);
 }
 
 .p-0 {
@@ -1424,6 +1446,10 @@ html {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 
 .italic {
@@ -1812,6 +1838,10 @@ html {
 
 .hover\:border-emerald\/50:hover {
   border-color: #00ffa680;
+}
+
+.hover\:bg-cyan\/10:hover {
+  background-color: #00d1ff1a;
 }
 
 .hover\:bg-cyan\/20:hover {

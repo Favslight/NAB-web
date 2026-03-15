@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
+import GuestBanner from '@/components/auth/GuestBanner';
 import { getInitials } from '@/lib/utils';
 
 const sidebarItems = [
@@ -130,6 +131,7 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 min-h-screen">
+        <GuestBanner />
         <div className="p-6 lg:p-8">
           {children}
         </div>
