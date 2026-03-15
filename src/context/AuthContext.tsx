@@ -9,7 +9,7 @@ interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
-  updateUser: (user: User) => void;
+  updateUser: (user: Partial<User>) => void;
   refreshUser: () => Promise<void>;
 }
 
@@ -103,8 +103,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateUser = (user: User) => {
-    setState(prev => ({ ...prev, user }));
+  const updateUser = (user: Partial<User>) => {
+    setState(prev => ({ ...prev, user: prev.user ? { ...prev.user, ...user } : null }));
   };
 
   return (
