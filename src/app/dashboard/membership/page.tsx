@@ -1,12 +1,15 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 
-import { CreditCard, Check, Calendar, ArrowRight, Shield, Sparkles } from 'lucide-react';
+import { CreditCard, Check, Calendar, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { membershipApi } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 const benefits = [
   'Access to exclusive training content',
@@ -19,9 +22,62 @@ const benefits = [
   'Mentorship matching',
 ];
 
+type TransactionItem = {
+  id?: string;
+  reference?: string;
+  amount?: number;
+  status?: string;
+  created_at?: string;
+  transaction_type?: string;
+};
+
 export default function MembershipPage() {
   const { user } = useAuth();
   const isActive = user?.membership_status === 'active';
+
+  const [history, setHistory] = useState<TransactionItem[]>([]);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await membershipApi.getHistory();
+        if (res.success && res.data) {
+          const list = Array.isArray(res.data) ? res.data : [];
+          setHistory(list);
+        }
+      } catch {
+        setHistory([]);
+      }
+    };
+    load();
+  }, []);
+
+  const handleCompletePayment = async () => {
+    setPaymentLoading(true);
+    try {
+      const res = await membershipApi.initiatePayment({
+        membership_type: 'basic',
+        referral_code: user?.referral_code,
+      });
+      if (res.success && res.data?.authorization_url) {
+        window.location.href = res.data.authorization_url;
+        return;
+      }
+      throw new Error(res.error ?? 'Could not start payment');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Payment failed');
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
+  const memberSince =
+    (user as any)?.membership?.starts_at &&
+    new Date((user as any).membership.starts_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  const expiresAt =
+    (user as any)?.membership?.expires_at &&
+    new Date((user as any).membership.expires_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
   return (
     <ProtectedRoute>
@@ -35,11 +91,7 @@ export default function MembershipPage() {
           </p>
         </div>
 
-        {/* Status Card */}
-        <div
-          
-          
-        >
+        <div>
           <Card className={`glass ${isActive ? 'border-emerald/30' : 'border-gold/30'}`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -62,26 +114,32 @@ export default function MembershipPage() {
               {isActive ? (
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="glass rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-emerald">Jan 2025</div>
+                    <div className="text-2xl font-bold text-emerald">{memberSince ?? '—'}</div>
                     <div className="text-sm text-text">Member Since</div>
                   </div>
                   <div className="glass rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-cyan">Dec 2025</div>
+                    <div className="text-2xl font-bold text-cyan">{expiresAt ?? '—'}</div>
                     <div className="text-sm text-text">Renewal Date</div>
                   </div>
                   <div className="glass rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-gold">₦25,000</div>
-                    <div className="text-sm text-text">Annual Fee</div>
+                    <div className="text-2xl font-bold text-gold">
+                      ₦{((user as any)?.membership?.amount_paid ?? 0).toLocaleString()}
+                    </div>
+                    <div className="text-sm text-text">Amount Paid</div>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-4">
                   <p className="text-text mb-4">
-                    Complete your payment of ₦25,000 to activate your membership
+                    Complete your payment to activate your membership
                   </p>
-                  <Button className="btn-neon">
+                  <Button
+                    className="btn-neon"
+                    onClick={handleCompletePayment}
+                    disabled={paymentLoading}
+                  >
                     <Sparkles className="mr-2" size={18} />
-                    Complete Payment
+                    {paymentLoading ? 'Starting...' : 'Complete Payment'}
                   </Button>
                 </div>
               )}
@@ -89,7 +147,6 @@ export default function MembershipPage() {
           </Card>
         </div>
 
-        {/* Benefits */}
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="glass">
             <CardHeader>
@@ -117,23 +174,39 @@ export default function MembershipPage() {
               <CardTitle className="text-white">Payment History</CardTitle>
             </CardHeader>
             <CardContent>
-              {isActive ? (
-                <div className="space-y-3">
-                  <div className="p-3 glass rounded-lg flex items-center justify-between">
-                    <div>
-                      <div className="font-medium text-white">Annual Membership</div>
-                      <div className="text-sm text-text">Jan 15, 2025</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-medium text-white">₦25,000</div>
-                      <Badge className="bg-emerald/20 text-emerald">Paid</Badge>
-                    </div>
-                  </div>
-                </div>
-              ) : (
+              {history.length === 0 ? (
                 <div className="text-center py-8 text-text">
                   <Calendar className="mx-auto mb-3" size={32} />
                   <p>No payment history yet</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {history.map((tx, i) => (
+                    <div key={tx.id ?? i} className="p-3 glass rounded-lg flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-white">
+                          {tx.transaction_type ?? 'Payment'}
+                        </div>
+                        {tx.created_at && (
+                          <div className="text-sm text-text">
+                            {new Date(tx.created_at).toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium text-white">
+                          ₦{(tx.amount ?? 0).toLocaleString()}
+                        </div>
+                        <Badge
+                          className={
+                            tx.status === 'success' ? 'bg-emerald/20 text-emerald' : 'bg-gold/20 text-gold'
+                          }
+                        >
+                          {tx.status ?? '—'}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </CardContent>

@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Navbar from '@/components/layout/Navbar';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -22,10 +24,17 @@ export default function LoginPage() {
   const { login, loginAsGuest } = useAuth();
   const router = useRouter();
 
-  const handleGuestLogin = () => {
-    loginAsGuest();
-    toast.success('Welcome! You\'re browsing as a guest.');
-    router.push('/dashboard');
+  const handleGuestLogin = async () => {
+    setIsLoading(true);
+    try {
+      await loginAsGuest();
+      toast.success("Welcome! You're browsing as a guest.");
+      router.push('/dashboard');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Guest login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,113 +56,117 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-midnight flex items-center justify-center p-4">
-      <div className="absolute inset-0 pattern-overlay opacity-30" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/5 rounded-full blur-3xl" />
-      
-      <div
-        
-        
-        className="relative w-full max-w-md"
-      >
-        <div className="glass-strong rounded-2xl p-8">
-          <div className="text-center mb-8">
-            <Link href="/" className="text-2xl font-bold font-display text-gradient">
-              AIBUILDERS.NG
-            </Link>
-            <h1 className="text-2xl font-bold text-white mt-6 mb-2">
-              Welcome Back
-            </h1>
-            <p className="text-text">
-              Sign in to access your dashboard
-            </p>
-          </div>
+    <main className="min-h-screen bg-background flex flex-col">
+      <Navbar />
+      <div className="flex-1 flex items-center justify-center pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-4">
+        <div className="absolute inset-0 pattern-overlay opacity-30 pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/5 rounded-full blur-3xl pointer-events-none" />
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-text">Email or ID Number</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text/50" size={18} />
-                <Input
-                  id="email"
-                  type="text"
-                  placeholder="you@example.com or NAB-LAG-0001"
-                  className="pl-10 bg-midnight-light/50 border-border"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-text">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text/50" size={18} />
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  className="pl-10 pr-10 bg-midnight-light/50 border-border"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text/50 hover:text-text"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full btn-neon py-6"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-              <ArrowRight className="ml-2" size={18} />
-            </Button>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-midnight-light px-2 text-text">Or</span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-cyan/50 text-cyan hover:bg-cyan/10 py-6"
-              onClick={handleGuestLogin}
-            >
-              <User className="mr-2" size={18} />
-              Continue as Guest
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-text">
-              Don&apos;t have an account?{' '}
-              <Link href="/signup" className="text-emerald hover:underline">
-                Join NAB
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="relative w-full max-w-md min-w-0 mx-auto"
+        >
+          <div className="glass-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 glow-edge border border-border/50 transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(0,255,166,0.06)]">
+            <div className="text-center mb-6 sm:mb-8">
+              <Link href="/" className="text-xl sm:text-2xl font-bold font-display text-gradient inline-block">
+                AIBUILDERS.NG
               </Link>
-            </p>
-          </div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mt-4 sm:mt-6 mb-2">
+                Welcome Back
+              </h1>
+              <p className="text-text text-sm sm:text-base">
+                Sign in to access your dashboard
+              </p>
+            </div>
 
-          <div className="mt-4 text-center">
-            <Link href="/" className="text-sm text-text/60 hover:text-text">
-              ← Back to home
-            </Link>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-text">Email or ID Number</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
+                  <Input
+                    id="email"
+                    type="text"
+                    placeholder="you@example.com or NAB-LAG-0001"
+                    className="pl-10 rounded-xl bg-midnight-light/50 border-border focus-visible:ring-emerald/30"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-text">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    className="pl-10 pr-10 rounded-xl bg-midnight-light/50 border-border focus-visible:ring-emerald/30"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text/50 hover:text-text transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full btn-neon py-5 sm:py-6 rounded-xl min-h-[44px] text-sm sm:text-base"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" size={18} />
+              </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-3 text-text">Or</span>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-cyan/50 text-cyan hover:bg-cyan/10 py-5 sm:py-6 rounded-xl min-h-[44px] text-sm sm:text-base"
+                onClick={handleGuestLogin}
+              >
+                <User className="mr-2" size={18} />
+                Continue as Guest
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-text">
+                Don&apos;t have an account?{' '}
+                <Link href="/signup" className="text-emerald hover:underline">
+                  Join NAB
+                </Link>
+              </p>
+            </div>
+
+            <div className="mt-4 text-center">
+              <Link href="/" className="text-sm text-text/60 hover:text-text transition-colors">
+                ← Back to home
+              </Link>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </main>
   );
