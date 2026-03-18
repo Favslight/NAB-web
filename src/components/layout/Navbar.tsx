@@ -33,7 +33,7 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 w-full pt-3 sm:pt-4 md:pt-5">
       <motion.nav
         initial={{ opacity: 0, y: -16, x: 0 }}
-        animate={{ opacity: 1, y: 0, x: shiftLeftForAuthPages ? -30 : 0 }}
+        animate={{ opacity: 1, y: 0, x: shiftLeftForAuthPages ? -19 : 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
         className={`
           layout-shell
