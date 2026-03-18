@@ -1,63 +1,78 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { Search, Plus, MessageCircle, Heart, Share2, Filter } from 'lucide-react';
+import { Search, Plus, MessageCircle, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { getInitials } from '@/lib/utils';
+import { communityApi } from '@/lib/api';
+
+type CommunityPost = {
+  id: string;
+  title: string;
+  content: string;
+  post_type?: string;
+  tags?: string[];
+  like_count?: number;
+  comments_count?: number;
+  created_at?: string;
+  author_name?: string;
+  author_avatar?: string;
+};
 
 const categories = ['All', 'Announcements', 'Ideas', 'Help', 'Showcase', 'General'];
-
-const posts = [
-  {
-    id: 1,
-    title: 'NAB Lagos Meetup - March 2025',
-    content: 'Join us for our monthly meetup at the Tech Hub in Yaba. We\'ll be discussing AI trends and networking.',
-    author: { name: 'NAB Admin', avatar: '' },
-    category: 'Announcements',
-    likes: 45,
-    comments: 12,
-    time: '2 hours ago',
-    pinned: true,
-  },
-  {
-    id: 2,
-    title: 'Looking for co-founder for healthtech AI project',
-    content: 'I\'m building an AI-powered diagnostic tool for rural healthcare. Looking for a technical co-founder with ML experience.',
-    author: { name: 'Sarah Johnson', avatar: '' },
-    category: 'Ideas',
-    likes: 23,
-    comments: 8,
-    time: '5 hours ago',
-    pinned: false,
-  },
-  {
-    id: 3,
-    title: 'How to deploy AI models on AWS?',
-    content: 'I\'m struggling with deploying my first ML model. Any tutorials or resources would be helpful!',
-    author: { name: 'Michael Chen', avatar: '' },
-    category: 'Help',
-    likes: 15,
-    comments: 6,
-    time: '1 day ago',
-    pinned: false,
-  },
-];
 
 export default function CommunityPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
 
-  const filteredPosts = posts.filter(post => 
-    (activeCategory === 'All' || post.category === activeCategory) &&
-    (post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     post.content.toLowerCase().includes(searchQuery.toLowerCase()))
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const res = await communityApi.getPosts({ page: 1, limit: 20 });
+        if (res.success && res.data) {
+          const items = (res.data.items || res.data.posts || res.data) as any[];
+          setPosts(
+            items.map((p) => ({
+              id: p.id,
+              title: p.title,
+              content: p.content,
+              post_type: p.post_type,
+              tags: p.tags,
+              like_count: p.like_count ?? p.likes_count,
+              comments_count: p.comments_count,
+              created_at: p.created_at,
+              author_name: p.author_name,
+              author_avatar: p.author_avatar,
+            }))
+          );
+        }
+      } catch {
+        // ignore, show empty state
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  const filteredPosts = useMemo(
+    () =>
+      posts.filter((post) => {
+        const categoryMatch =
+          activeCategory === 'All' ||
+          post.post_type?.toLowerCase?.() === activeCategory.toLowerCase();
+        const q = searchQuery.toLowerCase();
+        const text =
+          `${post.title ?? ''} ${post.content ?? ''}`.toLowerCase();
+        return categoryMatch && text.includes(q);
+      }),
+    [posts, activeCategory, searchQuery]
   );
 
   return (
@@ -106,51 +121,55 @@ export default function CommunityPage() {
         </div>
 
         <div className="space-y-4">
-          {filteredPosts.map((post, index) => (
-            <div
-              key={post.id}
-              
-              
-              
-            >
-              <Card className={`glass card-hover ${post.pinned ? 'border-gold/30' : ''}`}>
+          {filteredPosts.length === 0 ? (
+            <p className="text-sm text-text">
+              No discussions yet. Be the first to start a conversation!
+            </p>
+          ) : (
+            filteredPosts.map((post) => (
+              <Card key={post.id} className="glass card-hover">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <Avatar className="w-10 h-10 border border-emerald/30">
-                        <AvatarImage src={post.author.avatar} />
+                        <AvatarImage src={post.author_avatar} />
                         <AvatarFallback className="bg-emerald/20 text-emerald">
-                          {getInitials(post.author.name)}
+                          {getInitials(post.author_name || 'User')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium text-white">{post.author.name}</div>
-                        <div className="text-sm text-text">{post.time}</div>
+                        <div className="font-medium text-white">
+                          {post.author_name || 'Community Member'}
+                        </div>
+                        {post.created_at && (
+                          <div className="text-sm text-text">
+                            {new Date(post.created_at).toLocaleString()}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {post.pinned && (
-                        <Badge className="bg-gold/20 text-gold border-gold/30">
-                          Pinned
-                        </Badge>
-                      )}
+                    {post.post_type && (
                       <Badge variant="outline" className="text-cyan border-cyan/30">
-                        {post.category}
+                        {post.post_type}
                       </Badge>
-                    </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <h3 className="text-lg font-semibold text-white mb-2">{post.title}</h3>
-                  <p className="text-text mb-4">{post.content}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-text mb-4">
+                    {post.content}
+                  </p>
                   <div className="flex items-center gap-6 text-sm text-text">
                     <button className="flex items-center gap-2 hover:text-emerald transition-colors">
                       <Heart size={18} />
-                      {post.likes}
+                      {post.like_count ?? 0}
                     </button>
                     <button className="flex items-center gap-2 hover:text-cyan transition-colors">
                       <MessageCircle size={18} />
-                      {post.comments}
+                      {post.comments_count ?? 0}
                     </button>
                     <button className="flex items-center gap-2 hover:text-gold transition-colors">
                       <Share2 size={18} />
@@ -159,8 +178,8 @@ export default function CommunityPage() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </ProtectedRoute>

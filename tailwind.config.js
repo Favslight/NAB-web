@@ -7,6 +7,12 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
+  safelist: [
+    'section-glow',
+    'section-glow-right',
+    'section-glow-horizontal',
+    'label-accent',
+  ],
   theme: {
     container: {
       center: true,
@@ -50,12 +56,14 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        midnight: "#0B0F1A",
-        "midnight-light": "#1A1F3B",
-        emerald: "#00FFA6",
-        cyan: "#00D1FF",
-        gold: "#FFB800",
-        text: "#B3B8C5",
+        midnight: "hsl(var(--background))",
+        "midnight-light": "hsl(var(--card))",
+        "midnight-muted": "hsl(var(--muted))",
+        emerald: "hsl(var(--primary))",
+        cyan: "hsl(var(--secondary))",
+        gold: "hsl(var(--accent))",
+        text: "hsl(var(--muted-foreground))",
+        blue: "hsl(var(--blue))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -96,8 +104,8 @@ module.exports = {
           to: { opacity: 1, transform: "scale(1)" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(0, 255, 166, 0.3)" },
-          "50%": { boxShadow: "0 0 40px rgba(0, 255, 166, 0.5)" },
+          "0%, 100%": { boxShadow: "0 0 20px rgba(29, 184, 122, 0.28)" },
+          "50%": { boxShadow: "0 0 36px rgba(29, 184, 122, 0.4)" },
         },
       },
       animation: {

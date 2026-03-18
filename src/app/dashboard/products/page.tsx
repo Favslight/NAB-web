@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 
-import { Upload, X, Plus, Image as ImageIcon, Globe, Github } from 'lucide-react';
+import { Upload, Globe, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { productApi } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 const categories = ['Healthcare', 'Education', 'Agriculture', 'Finance', 'Transportation', 'Energy', 'Other'];
 
@@ -22,10 +23,34 @@ export default function ProductSubmissionPage() {
     github: '',
     images: [] as string[],
   });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Submit to API
+    if (!formData.title.trim()) {
+      toast.error('Product name is required');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await productApi.create({
+        name: formData.title.trim(),
+        description: formData.description.trim() || undefined,
+        category: formData.category || undefined,
+        website_url: formData.website.trim() || undefined,
+        demo_url: formData.github.trim() || undefined,
+      });
+      if (res.success) {
+        toast.success('Product submitted for review');
+        setFormData({ title: '', description: '', category: '', website: '', github: '', images: [] });
+      } else {
+        throw new Error((res as any).error ?? 'Submit failed');
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Submit failed');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -133,10 +158,10 @@ export default function ProductSubmissionPage() {
                 </div>
 
                 <div className="flex gap-4 pt-4">
-                  <Button type="submit" className="btn-neon flex-1">
-                    Submit Product
+                  <Button type="submit" className="btn-neon flex-1" disabled={submitting}>
+                    {submitting ? 'Submitting...' : 'Submit Product'}
                   </Button>
-                  <Button type="button" variant="outline" className="border-border">
+                  <Button type="button" variant="outline" className="border-border" disabled={submitting}>
                     Save as Draft
                   </Button>
                 </div>

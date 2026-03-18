@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 
 import {
@@ -18,23 +19,135 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/context/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { referralApi, trainingApi, notificationApi } from '@/lib/api';
+import type { Training } from '@/types';
 
-const stats = [
-  { label: 'Membership Status', value: 'Active', icon: CreditCard, color: 'text-emerald' },
-  { label: 'Referrals', value: '12', icon: Users, color: 'text-cyan' },
-  { label: 'State Hub', value: 'NAB Lagos', icon: MapPin, color: 'text-gold' },
-  { label: 'Training Progress', value: '75%', icon: BookOpen, color: 'text-emerald' },
-];
+interface ReferralDashboard {
+  stats?: {
+    clicked: number;
+    signed_up: number;
+    paid: number;
+    rewarded: number;
+    total_rewards: number;
+  };
+}
 
-const activities = [
-  { title: 'Welcome to NAB!', desc: 'Your membership is now active', time: '2 hours ago', type: 'membership' },
-  { title: 'New referral joined', desc: 'John D. used your referral code', time: '1 day ago', type: 'referral' },
-  { title: 'New training available', desc: 'AI Fundamentals - Week 3', time: '2 days ago', type: 'training' },
-  { title: 'State hub announcement', desc: 'NAB Lagos meetup this Saturday', time: '3 days ago', type: 'announcement' },
-];
+interface DashboardNotification {
+  id: string | number;
+  title: string;
+  message: string;
+  created_at?: string;
+}
 
 export default function DashboardPage() {
   const { user } = useAuth();
+
+  const [referralData, setReferralData] = useState<ReferralDashboard | null>(null);
+  const [trainings, setTrainings] = useState<Training[] | null>(null);
+  const [notifications, setNotifications] = useState<DashboardNotification[]>([]);
+
+  useEffect(() => {
+    // Load referrals
+    const loadReferrals = async () => {
+      try {
+        const res = await referralApi.getMe();
+        if (res.success && res.data) {
+          setReferralData({
+            stats: res.data.stats as ReferralDashboard['stats'],
+          });
+        }
+      } catch {
+        // soft-fail: keep dashboard usable
+      }
+    };
+
+    // Load trainings with progress
+    const loadTrainings = async () => {
+      try {
+        const res = await trainingApi.getAll({ page: 1, limit: 2 });
+        if (res.success && res.data) {
+          setTrainings(res.data as unknown as Training[]);
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    // Load recent notifications
+    const loadNotifications = async () => {
+      try {
+        const res = await notificationApi.getAll({ page: 1, limit: 4 });
+        if (res.success && res.data) {
+          const items = (res.data.items || res.data.notifications || []) as any[];
+          setNotifications(
+            items.map((n) => ({
+              id: n.id,
+              title: n.title ?? 'Notification',
+              message: n.message ?? n.body ?? '',
+              created_at: n.created_at,
+            }))
+          );
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    loadReferrals();
+    loadTrainings();
+    loadNotifications();
+  }, []);
+
+  const membershipStatusLabel =
+    user?.membership_status === 'active'
+      ? 'Active Member'
+      : user?.membership_status === 'pending'
+      ? 'Pending Activation'
+      : 'Membership Inactive';
+
+  const primaryTraining = useMemo(() => trainings?.[0], [trainings]);
+  const secondaryTraining = useMemo(() => trainings?.[1], [trainings]);
+
+  const stats = useMemo(
+    () => [
+      {
+        label: 'Membership Status',
+        value: user?.membership_status ?? 'Inactive',
+        icon: CreditCard,
+        color: 'text-emerald',
+      },
+      {
+        label: 'Referrals',
+        value: referralData?.stats?.signed_up?.toString() ?? '0',
+        icon: Users,
+        color: 'text-cyan',
+      },
+      {
+        label: 'State Hub',
+        value:
+          (user as any)?.state_name ??
+          user?.state ??
+          'Not Assigned',
+        icon: MapPin,
+        color: 'text-gold',
+      },
+      {
+        label: 'Training Progress',
+        value:
+          primaryTraining && (primaryTraining as any).progress
+            ? `${(primaryTraining as any).progress.progress_percent ?? 0}%`
+            : '0%',
+        icon: BookOpen,
+        color: 'text-emerald',
+      },
+    ],
+    [user, referralData, primaryTraining]
+  );
+
+  const primaryProgress =
+    primaryTraining && (primaryTraining as any).progress
+      ? (primaryTraining as any).progress.progress_percent ?? 0
+      : 0;
 
   return (
     <ProtectedRoute>
@@ -52,34 +165,28 @@ export default function DashboardPage() {
           <Link href="/dashboard/referrals">
             <Button className="btn-neon">
               <Sparkles className="mr-2" size={18} />
-              Refer & Earn ₦5,000
+              Refer &amp; Earn ₦
+              {(referralData?.stats?.total_rewards ?? 5000).toLocaleString()}
             </Button>
           </Link>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => {
+          {stats.map((stat) => {
             const Icon = stat.icon;
             return (
-              <div
-                key={stat.label}
-                
-                
-                
-              >
-                <Card className="glass card-hover">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 rounded-lg bg-midnight-light ${stat.color}`}>
-                        <Icon size={20} />
-                      </div>
+              <Card key={stat.label} className="glass card-hover">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`p-2 rounded-lg bg-midnight-light ${stat.color}`}>
+                      <Icon size={20} />
                     </div>
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                    <div className="text-sm text-text">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{stat.value}</div>
+                  <div className="text-sm text-text">{stat.label}</div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
@@ -100,14 +207,14 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <div className="text-lg font-semibold text-white">
-                      {user?.membership_status === 'active' ? 'Active Member' : 'Pending Activation'}
+                      {membershipStatusLabel}
                     </div>
                     <div className="text-sm text-text">
                       ID: {user?.id_no || 'NAB-XXX-0000'}
                     </div>
                   </div>
                   <Badge className="bg-emerald/20 text-emerald border-emerald/30">
-                    {user?.membership_status || 'Inactive'}
+                    {user?.membership_status || 'inactive'}
                   </Badge>
                 </div>
                 {user?.membership_status !== 'active' && (
@@ -120,7 +227,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Upcoming Training */}
+            {/* Continue Learning */}
             <Card className="glass">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-white flex items-center gap-2">
@@ -137,24 +244,36 @@ export default function DashboardPage() {
               <CardContent className="space-y-4">
                 <div className="glass rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium text-white">AI Fundamentals</div>
+                    <div className="font-medium text-white">
+                      {primaryTraining?.title ?? 'Your next training will appear here'}
+                    </div>
                     <Badge variant="outline" className="text-cyan border-cyan/30">
-                      In Progress
+                      {primaryProgress > 0 ? 'In Progress' : 'Not Started'}
                     </Badge>
                   </div>
-                  <Progress value={75} className="mb-2" />
-                  <div className="text-sm text-text">3 of 4 modules completed</div>
-                </div>
-                <div className="glass rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium text-white">Building AI Products</div>
-                    <Badge variant="outline" className="text-text border-text/30">
-                      Not Started
-                    </Badge>
+                  <Progress value={primaryProgress} className="mb-2" />
+                  <div className="text-sm text-text">
+                    {primaryProgress > 0
+                      ? `${primaryProgress.toFixed(0)}% complete`
+                      : 'Start a training from the Learning Center'}
                   </div>
-                  <Progress value={0} className="mb-2" />
-                  <div className="text-sm text-text">0 of 6 modules completed</div>
                 </div>
+                {secondaryTraining && (
+                  <div className="glass rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-medium text-white">
+                        {secondaryTraining.title}
+                      </div>
+                      <Badge variant="outline" className="text-text border-text/30">
+                        Not Started
+                      </Badge>
+                    </div>
+                    <Progress value={0} className="mb-2" />
+                    <div className="text-sm text-text">
+                      0% complete
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -176,16 +295,30 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {activities.map((activity, index) => (
-                    <div key={index} className="flex gap-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald mt-2 shrink-0" />
-                      <div>
-                        <div className="font-medium text-white text-sm">{activity.title}</div>
-                        <div className="text-sm text-text">{activity.desc}</div>
-                        <div className="text-xs text-text/60 mt-1">{activity.time}</div>
+                  {notifications.length === 0 ? (
+                    <p className="text-sm text-text">
+                      You have no recent notifications yet.
+                    </p>
+                  ) : (
+                    notifications.map((activity) => (
+                      <div key={activity.id} className="flex gap-3">
+                        <div className="w-2 h-2 rounded-full bg-emerald mt-2 shrink-0" />
+                        <div>
+                          <div className="font-medium text-white text-sm">
+                            {activity.title}
+                          </div>
+                          <div className="text-sm text-text">
+                            {activity.message}
+                          </div>
+                          {activity.created_at && (
+                            <div className="text-xs text-text/60 mt-1">
+                              {new Date(activity.created_at).toLocaleString()}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
