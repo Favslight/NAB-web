@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 import {
@@ -17,7 +18,6 @@ import {
   Settings,
   LogOut,
   Menu,
-  X,
   GraduationCap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
 import GuestBanner from '@/components/auth/GuestBanner';
 import { getInitials } from '@/lib/utils';
+import Logo from '@/components/logo.png';
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
@@ -117,20 +118,51 @@ export default function DashboardLayout({
         <SidebarContent />
       </aside>
 
-      {/* Mobile Sidebar */}
-      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetTrigger asChild className="lg:hidden fixed top-4 left-4 z-50">
-          <Button variant="ghost" size="icon" className="text-white">
-            <Menu size={24} />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0 glass border-r border-border">
-          <SidebarContent />
-        </SheetContent>
-      </Sheet>
+      {/* Mobile navbar + sidebar */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50">
+        <div className="glass border-b border-border">
+          <div className="px-4 h-14 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2 min-w-0">
+              <div className="relative w-8 h-8 shrink-0">
+                <Image
+                  src={Logo}
+                  alt="Nigerian AI Builders logo"
+                  className="rounded-lg object-contain"
+                  fill
+                  priority
+                  sizes="32px"
+                />
+              </div>
+              <span className="text-base font-bold font-display text-white-gradient-motion truncate">
+                AIBUILDERS.NG
+              </span>
+            </Link>
+
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white min-h-[44px] min-w-[44px]"
+                  aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                >
+                  <Menu size={22} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                overlayClassName="top-14 z-40 bg-black/60 backdrop-blur-sm data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0"
+                className="top-14 h-[calc(100vh-3.5rem)] w-72 max-w-[85vw] p-0 glass border-r border-border rounded-none data-[state=open]:duration-500 data-[state=closed]:duration-300"
+              >
+                <SidebarContent />
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 min-h-screen">
+      <main className="flex-1 lg:ml-64 min-h-screen pt-14 lg:pt-0">
         <GuestBanner />
         <div className="p-6 lg:p-8">
           {children}

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { User, AuthState, LoginCredentials, RegisterData } from '@/types';
-import { authApi } from '@/lib/api';
+import { authApi, stateHubApi, userApi } from '@/lib/api';
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -11,7 +11,7 @@ interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   updateUser: (user: Partial<User>) => void;
   refreshUser: () => Promise<void>;
-  loginAsGuest: () => void;
+  loginAsGuest: () => Promise<void>;
 }
 
 const GUEST_USER: User = {
@@ -75,7 +75,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refreshUser]);
 
   const login = async (credentials: LoginCredentials) => {
-    const response = await authApi.login(credentials);
+    // Backend accepts either email or id_no; map based on input
+    const identifier = credentials.email || credentials.id_no || '';
+    const payload: LoginCredentials =
+      identifier.includes('@')
+        ? { email: identifier, password: credentials.password }
+        : { id_no: identifier, password: credentials.password };
+
+    const response = await authApi.login(payload);
     
     if (!response.success || !response.data) {
       throw new Error(response.error || 'Login failed');
@@ -93,7 +100,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (data: RegisterData) => {
-    const response = await authApi.register(data);
+    // Map state name from form to backend state_id via states list
+    const statesResponse = await userApi.getStates();
+    if (!statesResponse.success || !statesResponse.data) {
+      throw new Error(statesResponse.error || 'Unable to load states');
+    }
+
+    const selectedState = statesResponse.data.find(
+      (s) =>
+        (s.name?.toLowerCase?.() ?? '') === data.state.toLowerCase() ||
+        (s.state_code?.toLowerCase?.() ?? '') === data.state.toLowerCase()
+    );
+
+    if (!selectedState) {
+      throw new Error('Selected state is not available');
+    }
+
+    const response = await authApi.register({
+      full_name: data.full_name,
+      email: data.email,
+      phone: data.phone,
+      state_id: selectedState.id,
+      profession: data.profession,
+      password: data.password,
+      referral_code: data.referral_code,
+    });
     
     if (!response.success || !response.data) {
       throw new Error(response.error || 'Registration failed');
@@ -131,9 +162,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState((prev: AuthState) => ({ ...prev, user: prev.user ? { ...prev.user, ...user } : null }));
   };
 
-  const loginAsGuest = () => {
+  const loginAsGuest = async () => {
+    // Pick the first available state hub for guest users
+    const statesResponse = await stateHubApi.getAll();
+    if (!statesResponse.success || !statesResponse.data || statesResponse.data.length === 0) {
+      throw new Error(statesResponse.error || 'Unable to start guest session');
+    }
+
+    const defaultState = statesResponse.data[0];
+
+    const response = await authApi.guestLogin({
+      full_name: GUEST_USER.full_name,
+      state_id: defaultState.id,
+    });
+
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Guest login failed');
+    }
+
+    const { user, token } = response.data;
+    Cookies.set('auth_token', token, { expires: 1, secure: true, sameSite: 'strict' });
+
     setState({
-      user: GUEST_USER,
+      user,
       isAuthenticated: true,
       isLoading: false,
       isGuest: true,

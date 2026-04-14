@@ -90,129 +90,387 @@ export const authApi = {
   login: (credentials: { email?: string; id_no?: string; password: string }) =>
     apiClient.post<{ user: import('@/types').User; token: string }>('/api/auth/login', credentials),
   
-  register: (data: import('@/types').RegisterData) =>
+  register: (data: {
+    full_name: string;
+    email: string;
+    phone?: string;
+    state_id: string;
+    profession?: string;
+    password: string;
+    referral_code?: string;
+  }) =>
     apiClient.post<{ user: import('@/types').User; token: string }>('/api/auth/register', data),
   
   logout: () => apiClient.post('/api/auth/logout'),
   
-  me: () => apiClient.get<import('@/types').User>('/api/users/me'),
+  me: () => apiClient.get<import('@/types').User>('/api/auth/me'),
   
-  updateProfile: (data: Partial<import('@/types').User>) =>
-    apiClient.put<import('@/types').User>('/api/users/me', data),
+  updateProfile: (data: {
+    full_name?: string;
+    phone?: string;
+    profession?: string;
+    avatar_url?: string | null;
+  }) =>
+    apiClient.put<import('@/types').User>('/api/users/profile', data),
   
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     apiClient.post('/api/auth/change-password', data),
+
+  guestLogin: (data: { full_name: string; state_id: string }) =>
+    apiClient.post<{
+      user: import('@/types').User;
+      token: string;
+      isGuest: boolean;
+    }>('/api/auth/guest-login', data),
+
+  verifyEmail: (token: string) =>
+    apiClient.post<null>('/api/auth/verify-email', { token }),
+
+  forgotPassword: (email: string) =>
+    apiClient.post<null>('/api/auth/forgot-password', { email }),
+
+  resetPassword: (token: string, password: string) =>
+    apiClient.post<null>('/api/auth/reset-password', { token, password }),
 };
 
-// Membership API
+// Membership / Payments API
 export const membershipApi = {
-  initiatePayment: () =>
-    apiClient.post<{ authorization_url: string; reference: string }>('/api/payments/initiate-membership'),
-  
+  // POST /api/payments/initiate
+  initiatePayment: (data: {
+    membership_type: 'basic' | 'premium' | 'lifetime';
+    referral_code?: string;
+  }) =>
+    apiClient.post<{
+      authorization_url: string;
+      reference: string;
+      access_code: string;
+    }>('/api/payments/initiate', data),
+
+  // GET /api/payments/verify/:reference
   verifyPayment: (reference: string) =>
-    apiClient.get<{ status: string; transaction: import('@/types').PaymentTransaction }>(`/api/payments/verify/${reference}`),
-  
+    apiClient.get<{
+      status: string;
+      amount: number;
+      paid_at: string;
+      channel: string;
+    }>(`/api/payments/verify/${reference}`),
+
+  // GET /api/payments/history
+  getHistory: () =>
+    apiClient.get<import('@/types').PaymentTransaction[]>('/api/payments/history'),
+
+  // Existing membership status endpoint (if exposed separately)
   getStatus: () => apiClient.get<import('@/types').MembershipStatus>('/api/membership/status'),
 };
 
 // Referral API
 export const referralApi = {
-  getStats: () => apiClient.get<import('@/types').ReferralStats>('/api/referrals/me'),
-  
-  getReferrals: (params?: { status?: string; page?: number; limit?: number }) =>
-    apiClient.get<{ referrals: import('@/types').Referral[]; total: number }>('/api/referrals', params),
-  
-  getLeaderboard: () =>
-    apiClient.get<{ user: import('@/types').User; referral_count: number; rewards: number }[]>('/api/referrals/leaderboard'),
+  // GET /api/referrals/me - current user's referral dashboard
+  getMe: () =>
+    apiClient.get<{
+      referral_code: string;
+      referral_link: string;
+      stats: {
+        clicked: number;
+        signed_up: number;
+        paid: number;
+        rewarded: number;
+        total_rewards: number;
+      };
+      referrals: any[];
+    }>('/api/referrals/me'),
+
+  // GET /api/referrals/leaderboard - top referrers
+  getLeaderboard: (limit?: number) =>
+    apiClient.get<any[]>('/api/referrals/leaderboard', limit ? { limit } : undefined),
+
+  // POST /api/referrals/track-click - track referral link clicks (public)
+  trackClick: (data: {
+    referral_code: string;
+    ip_address?: string;
+    user_agent?: string;
+  }) => apiClient.post<null>('/api/referrals/track-click', data),
+
+  // GET /api/referrals/admin/stats - aggregate stats for super admins
+  getAdminStats: () => apiClient.get<any>('/api/referrals/admin/stats'),
+};
+
+// User API (admin and profile helpers)
+export const userApi = {
+  // GET /api/users - admin list with filters
+  getAll: (params?: {
+    page?: number;
+    limit?: number;
+    state_id?: string;
+    role?: 'guest' | 'member' | 'premium_builder' | 'state_admin' | 'super_admin';
+  }) => apiClient.get<any>('/api/users', params),
+
+  // GET /api/users/profile - current user profile (+membership, referral stats)
+  getProfile: () => apiClient.get<any>('/api/users/profile'),
+
+  // PUT /api/users/profile - update current user profile
+  updateProfile: (data: {
+    full_name?: string;
+    phone?: string;
+    profession?: string;
+    avatar_url?: string | null;
+  }) => apiClient.put<any>('/api/users/profile', data),
+
+  // GET /api/users/:id - fetch user by id
+  getById: (id: string) => apiClient.get<any>(`/api/users/${id}`),
+
+  // GET /api/users/states - states with user counts
+  getStates: () => stateHubApi.getStates(),
+
+  // GET /api/users/state-hubs - all hubs
+  getStateHubs: () => stateHubApi.getAll(),
+
+  // GET /api/users/state-hubs/:slug - hub by slug
+  getStateHubBySlug: (slug: string) => stateHubApi.getBySlug(slug),
 };
 
 // Training API
 export const trainingApi = {
-  getAll: (params?: { category?: string; level?: string; is_premium?: boolean }) =>
-    apiClient.get<import('@/types').Training[]>('/api/trainings', params),
-  
-  getById: (id: string) => apiClient.get<import('@/types').Training>(`/api/trainings/${id}`),
-  
-  getProgress: () => apiClient.get<import('@/types').TrainingProgress[]>('/api/trainings/progress'),
-  
-  updateProgress: (trainingId: string, progress: number) =>
-    apiClient.post(`/api/trainings/${trainingId}/progress`, { progress }),
+  // GET /api/trainings
+  getAll: (params?: { page?: number; limit?: number; category?: string }) =>
+    apiClient.get<any>('/api/trainings', params),
+
+  // GET /api/trainings/:id
+  getById: (id: string) => apiClient.get<any>(`/api/trainings/${id}`),
+
+  // POST /api/trainings/:id/progress
+  updateProgress: (
+    trainingId: string,
+    data: { lesson_id?: string; progress_percent?: number; completed?: boolean }
+  ) => apiClient.post<any>(`/api/trainings/${trainingId}/progress`, data),
+
+  // GET /api/trainings/categories
+  getCategories: () => apiClient.get<string[]>('/api/trainings/categories'),
 };
 
 // Community API
 export const communityApi = {
-  getPosts: (params?: { category?: string; page?: number; limit?: number }) =>
-    apiClient.get<{ posts: import('@/types').CommunityPost[]; total: number }>('/api/community/posts', params),
-  
-  getPostById: (id: string) => apiClient.get<import('@/types').CommunityPost>(`/api/community/posts/${id}`),
-  
-  createPost: (data: { title: string; content: string; category: string; tags?: string[] }) =>
-    apiClient.post<import('@/types').CommunityPost>('/api/community/posts', data),
-  
-  updatePost: (id: string, data: Partial<import('@/types').CommunityPost>) =>
-    apiClient.put<import('@/types').CommunityPost>(`/api/community/posts/${id}`, data),
-  
-  deletePost: (id: string) => apiClient.delete(`/api/community/posts/${id}`),
-  
-  likePost: (id: string) => apiClient.post(`/api/community/posts/${id}/like`),
-  
-  getComments: (postId: string) =>
-    apiClient.get<import('@/types').Comment[]>(`/api/community/posts/${postId}/comments`),
-  
-  createComment: (postId: string, content: string) =>
-    apiClient.post<import('@/types').Comment>(`/api/community/posts/${postId}/comments`, { content }),
+  // GET /api/community/posts
+  getPosts: (params?: {
+    page?: number;
+    limit?: number;
+    state_hub_id?: string;
+    post_type?: 'discussion' | 'question' | 'showcase' | 'event' | 'job';
+  }) => apiClient.get<any>('/api/community/posts', params),
+
+  // GET /api/community/posts/:id
+  getPostById: (id: string) => apiClient.get<any>(`/api/community/posts/${id}`),
+
+  // POST /api/community/posts
+  createPost: (data: {
+    title: string;
+    content: string;
+    post_type?: 'discussion' | 'question' | 'showcase' | 'event' | 'job';
+    state_hub_id?: string;
+    tags?: string[];
+    media_urls?: string[];
+  }) => apiClient.post<any>('/api/community/posts', data),
+
+  // POST /api/community/posts/:id/comments
+  addComment: (
+    postId: string,
+    data: { content: string; parent_comment_id?: string }
+  ) => apiClient.post<any>(`/api/community/posts/${postId}/comments`, data),
+
+  // POST /api/community/posts/:id/react
+  reactToPost: (postId: string) =>
+    apiClient.post<null>(`/api/community/posts/${postId}/react`),
 };
 
 // Product API
 export const productApi = {
-  getAll: (params?: { industry?: string; state?: string; featured?: boolean }) =>
-    apiClient.get<{ products: import('@/types').Product[]; total: number }>('/api/products', params),
-  
-  getById: (id: string) => apiClient.get<import('@/types').Product>(`/api/products/${id}`),
-  
-  create: (data: FormData) => apiClient.upload<import('@/types').Product>('/api/products', data),
-  
-  update: (id: string, data: FormData) =>
-    apiClient.upload<import('@/types').Product>(`/api/products/${id}`, data),
-  
-  delete: (id: string) => apiClient.delete(`/api/products/${id}`),
-  
-  like: (id: string) => apiClient.post(`/api/products/${id}/like`),
+  // GET /api/products
+  getAll: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    status?: 'pending_review' | 'approved' | 'published';
+  }) => apiClient.get<any>('/api/products', params),
+
+  // GET /api/products/:slug
+  getBySlug: (slug: string) => apiClient.get<any>(`/api/products/${slug}`),
+
+  // POST /api/products
+  create: (data: {
+    name: string;
+    description?: string;
+    category?: string;
+    website_url?: string;
+    demo_url?: string;
+  }) => apiClient.post<any>('/api/products', data),
+
+  // PUT /api/products/:id
+  update: (
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      category?: string;
+      website_url?: string | null;
+      demo_url?: string | null;
+    }
+  ) => apiClient.put<any>(`/api/products/${id}`, data),
 };
 
-// State Hub API
+// State / State Hub API (user-scoped)
 export const stateHubApi = {
-  getAll: () => apiClient.get<import('@/types').StateHub[]>('/api/state-hubs'),
-  
-  getById: (id: string) => apiClient.get<import('@/types').StateHub>(`/api/state-hubs/${id}`),
-  
-  getMembers: (id: string) => apiClient.get<import('@/types').User[]>(`/api/state-hubs/${id}/members`),
-  
-  getAnnouncements: (id: string) =>
-    apiClient.get<import('@/types').Announcement[]>(`/api/state-hubs/${id}/announcements`),
+  // States with user counts
+  getStates: () => apiClient.get<any[]>('/api/users/states'),
+
+  // All state hubs
+  getAll: () => apiClient.get<any[]>('/api/users/state-hubs'),
+
+  // Current user's hub (derived from user's state_id)
+  getMyHub: () => apiClient.get<any>('/api/users/my-hub'),
+
+  // Single hub by slug
+  getBySlug: (slug: string) =>
+    apiClient.get<any>(`/api/users/state-hubs/${slug}`),
 };
 
 // Notifications API
 export const notificationApi = {
-  getAll: (params?: { is_read?: boolean; page?: number; limit?: number }) =>
-    apiClient.get<{ notifications: import('@/types').Notification[]; total: number; unread_count: number }>('/api/notifications', params),
-  
-  markAsRead: (id: string) => apiClient.patch(`/api/notifications/${id}/read`),
-  
-  markAllAsRead: () => apiClient.patch('/api/notifications/read-all'),
-  
+  // GET /api/notifications
+  getAll: (params?: { page?: number; limit?: number; unread_only?: boolean }) =>
+    apiClient.get<any>('/api/notifications', {
+      page: params?.page,
+      limit: params?.limit,
+      unread_only: params?.unread_only ?? false,
+    }),
+
+  // GET /api/notifications/unread-count
+  getUnreadCount: () =>
+    apiClient.get<{ count: number }>('/api/notifications/unread-count'),
+
+  // POST /api/notifications/:id/read
+  markAsRead: (id: string) =>
+    apiClient.post<null>(`/api/notifications/${id}/read`),
+
+  // POST /api/notifications/read-all
+  markAllAsRead: () => apiClient.post<null>('/api/notifications/read-all'),
+
+  // DELETE /api/notifications/:id
   delete: (id: string) => apiClient.delete(`/api/notifications/${id}`),
 };
 
 // Program API
 export const programApi = {
-  apply: (data: { program_name: string; application_data?: Record<string, unknown> }) =>
-    apiClient.post<import('@/types').ProgramApplication>('/api/programs/apply', data),
-  
-  getApplications: () => apiClient.get<import('@/types').ProgramApplication[]>('/api/programs/applications'),
-  
-  initiatePayment: (applicationId: string) =>
-    apiClient.post<{ authorization_url: string; reference: string }>(`/api/programs/${applicationId}/pay`),
+  // GET /api/program/cohorts
+  getCohorts: (params?: {
+    page?: number;
+    limit?: number;
+    status?: 'draft' | 'open' | 'in_progress' | 'closed' | 'completed';
+  }) => apiClient.get<any>('/api/program/cohorts', params),
+
+  // GET /api/program/cohorts/:id
+  getCohortById: (id: string) =>
+    apiClient.get<any>(`/api/program/cohorts/${id}`),
+
+  // POST /api/program/apply
+  apply: (data: {
+    cohort_id: string;
+    experience_level?: 'beginner' | 'intermediate' | 'advanced';
+    motivation?: string;
+    portfolio_url?: string;
+    github_url?: string;
+    resume_url?: string;
+  }) => apiClient.post<any>('/api/program/apply', data),
+
+  // GET /api/program/applications/me
+  getMyApplications: () =>
+    apiClient.get<any>('/api/program/applications/me'),
+
+  // GET /api/program/enrollments/me
+  getMyEnrollments: () =>
+    apiClient.get<any>('/api/program/enrollments/me'),
+};
+
+// Admin API
+export const adminApi = {
+  // Admin dashboard stats
+  getDashboard: () =>
+    apiClient.get<{
+      users: { total: number; members: number };
+      pending: { products: number; applications: number };
+      content: { posts: number };
+      revenue: { total: number; recent_transactions: number };
+      isStateAdmin: boolean;
+      stateId: string;
+    }>('/api/admin/dashboard'),
+
+  // Users list (admin view)
+  getUsers: (params: { page?: number; limit?: number }) =>
+    apiClient.get<any>('/api/admin/users', params),
+
+  // Update user role (super admin only)
+  updateUserRole: (id: string, role: 'guest' | 'member' | 'premium_builder' | 'state_admin') =>
+    apiClient.put(`/api/admin/users/${id}/role`, { role }),
+
+  // Update user status (state admin)
+  updateUserStatus: (
+    id: string,
+    status:
+      | 'pending_verification'
+      | 'verified'
+      | 'membership_inactive'
+      | 'membership_active'
+      | 'suspended'
+  ) => apiClient.put(`/api/admin/users/${id}/status`, { status }),
+
+  // Program applications
+  getApplications: (params: { page?: number; limit?: number }) =>
+    apiClient.get<any>('/api/admin/applications', params),
+
+  reviewApplication: (
+    id: string,
+    data: { status: 'accepted' | 'rejected' | 'waitlisted'; notes?: string }
+  ) => apiClient.post<null>(`/api/admin/applications/${id}/review`, data),
+
+  // Cohorts
+  createCohort: (data: {
+    name: string;
+    description?: string;
+    start_date?: string;
+    end_date?: string;
+    capacity?: number;
+    application_opens_at?: string;
+    application_closes_at?: string;
+  }) => apiClient.post<any>('/api/admin/cohorts', data),
+
+  // Audit logs (super admin)
+  getAuditLogs: (params: { page?: number; limit?: number }) =>
+    apiClient.get<any>('/api/admin/audit-logs', params),
+
+  // System settings
+  getSettings: () => apiClient.get<any[]>('/api/admin/settings'),
+
+  updateSetting: (key: string, value: string) =>
+    apiClient.put<any>(`/api/admin/settings/${encodeURIComponent(key)}`, { value }),
+};
+
+// Moderation API
+export const moderationApi = {
+  // POST /api/moderation/posts/:id/action
+  moderatePost: (
+    postId: string,
+    data: {
+      action: 'hide' | 'feature' | 'unfeature' | 'mark_spam' | 'delete';
+      reason?: string;
+    }
+  ) => apiClient.post<null>(`/api/moderation/posts/${postId}/action`, data),
+
+  // POST /api/moderation/comments/:id/hide
+  hideComment: (commentId: string) =>
+    apiClient.post<null>(`/api/moderation/comments/${commentId}/hide`),
+
+  // GET /api/moderation/logs
+  getLogs: (params?: { page?: number; limit?: number }) =>
+    apiClient.get<any>('/api/moderation/logs', params),
 };
 
 // Cloudinary upload
