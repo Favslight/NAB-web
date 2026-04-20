@@ -266,7 +266,7 @@ export const communityApi = {
     title: string;
     content: string;
     post_type?: 'discussion' | 'question' | 'showcase' | 'event' | 'job';
-    state_hub_id?: string;
+    hub_id?: string;
     tags?: string[];
     media_urls?: string[];
   }) => apiClient.post<any>('/api/community/posts', data),

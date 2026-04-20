@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Search, Plus, MessageCircle, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,8 +16,8 @@ import { communityApi } from '@/lib/api';
 type CommunityPost = {
   id: string;
   title: string;
-  content: string;
-  post_type?: string;
+  body: string;
+  category?: string;
   tags?: string[];
   like_count?: number;
   comments_count?: number;
@@ -28,6 +29,7 @@ type CommunityPost = {
 const categories = ['All', 'Announcements', 'Ideas', 'Help', 'Showcase', 'General'];
 
 export default function CommunityPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [posts, setPosts] = useState<CommunityPost[]>([]);
@@ -42,8 +44,8 @@ export default function CommunityPage() {
             items.map((p) => ({
               id: p.id,
               title: p.title,
-              content: p.content,
-              post_type: p.post_type,
+              body: p.body,
+              category: p.category,
               tags: p.tags,
               like_count: p.like_count ?? p.likes_count,
               comments_count: p.comments_count,
@@ -66,10 +68,10 @@ export default function CommunityPage() {
       posts.filter((post) => {
         const categoryMatch =
           activeCategory === 'All' ||
-          post.post_type?.toLowerCase?.() === activeCategory.toLowerCase();
+          post.category?.toLowerCase?.() === activeCategory.toLowerCase();
         const q = searchQuery.toLowerCase();
         const text =
-          `${post.title ?? ''} ${post.content ?? ''}`.toLowerCase();
+          `${post.title ?? ''} ${post.body ?? ''}`.toLowerCase();
         return categoryMatch && text.includes(q);
       }),
     [posts, activeCategory, searchQuery]
@@ -87,7 +89,7 @@ export default function CommunityPage() {
               Connect, share, and grow with fellow AI builders
             </p>
           </div>
-          <Button className="btn-neon">
+          <Button className="btn-neon" onClick={() => router.push('/dashboard/community/new')}>
             <Plus className="mr-2" size={18} />
             New Post
           </Button>
@@ -148,9 +150,9 @@ export default function CommunityPage() {
                         )}
                       </div>
                     </div>
-                    {post.post_type && (
+                    {post.category && (
                       <Badge variant="outline" className="text-cyan border-cyan/30">
-                        {post.post_type}
+                        {post.category}
                       </Badge>
                     )}
                   </div>
@@ -160,7 +162,7 @@ export default function CommunityPage() {
                     {post.title}
                   </h3>
                   <p className="text-text mb-4">
-                    {post.content}
+                    {post.body}
                   </p>
                   <div className="flex items-center gap-6 text-sm text-text">
                     <button className="flex items-center gap-2 hover:text-emerald transition-colors">

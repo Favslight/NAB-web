@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   title: "AIBUILDERS - Nigerian AI Builders Movement",
   description: "Join the NAB movement. Build AI solutions for Nigeria. Get trained, connected, and funded.",
   keywords: ["AI", "Nigeria", "Builders", "Artificial Intelligence", "Tech", "Startup"],
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export const viewport = {

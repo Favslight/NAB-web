@@ -1,11 +1,12 @@
 {
-<<<<<<< HEAD
-  "/dashboard/page": "app/dashboard/page.js",
-=======
   "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/community/page": "app/dashboard/community/page.js",
+  "/dashboard/learning/page": "app/dashboard/learning/page.js",
+  "/dashboard/membership/page": "app/dashboard/membership/page.js",
   "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/profile/page": "app/dashboard/profile/page.js",
+  "/dashboard/settings/page": "app/dashboard/settings/page.js",
   "/dashboard/state-hub/page": "app/dashboard/state-hub/page.js",
->>>>>>> 854ea427c405742a1c6f48b4b4b396decdff7542
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/signup/page": "app/signup/page.js"
