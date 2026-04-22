@@ -154,11 +154,11 @@ export default function ProgramPage() {
                   <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                     <div className="glass rounded-lg p-3 sm:p-4">
                       <div className="text-sm text-text mb-1">Next Cohort</div>
-                      <div className="text-white font-semibold">March 2025</div>
+                      <div className="text-white font-semibold">July 2026</div>
                     </div>
                     <div className="glass rounded-lg p-4">
                       <div className="text-sm text-text mb-1">Application Deadline</div>
-                      <div className="text-white font-semibold">February 15, 2025</div>
+                      <div className="text-white font-semibold">May 15 - June 25</div>
                     </div>
                   </div>
                   
@@ -178,7 +178,7 @@ export default function ProgramPage() {
       {/* Footer */}
       <footer className="py-8 sm:py-12 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-text text-xs sm:text-sm">
-          © 2025 AIBUILDERS.NG. All rights reserved.
+          © 2026 AIBUILDERS.NG. All rights reserved.
         </div>
       </footer>
     </main>

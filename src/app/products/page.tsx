@@ -206,7 +206,7 @@ export default function ProductsPage() {
       {/* Footer */}
       <footer className="py-8 sm:py-12 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-text text-xs sm:text-sm">
-          © 2025 AIBUILDERS.NG. All rights reserved.
+          © 2026 AIBUILDERS.NG. All rights reserved.
         </div>
       </footer>
     </main>

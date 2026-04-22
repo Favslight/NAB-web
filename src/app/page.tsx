@@ -607,7 +607,7 @@ export default function Home() {
             </div>
           </div>
           <div className="pt-6 sm:pt-8 border-t border-border text-center text-text text-xs sm:text-sm px-2">
-            © 2025 AIBUILDERS.NG. All rights reserved. NAB - Nigerian AI
+            © 2026 AIBUILDERS.NG. All rights reserved. NAB - Nigerian AI
             Builders.
           </div>
         </div>
