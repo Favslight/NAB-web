@@ -5,9 +5,15 @@ import Cookies from 'js-cookie';
 import { User, AuthState, LoginCredentials, RegisterData } from '@/types';
 import { authApi, stateHubApi, userApi } from '@/lib/api';
 
+interface RegisterResult {
+  requiresPayment?: boolean;
+  userRole?: string;
+  message?: string;
+}
+
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  register: (data: RegisterData) => Promise<RegisterResult>;
   logout: () => Promise<void>;
   updateUser: (user: Partial<User>) => void;
   refreshUser: () => Promise<void>;
@@ -26,7 +32,7 @@ const GUEST_USER: User = {
   is_member: false,
   membership_status: 'inactive',
   referral_code: '',
-  role: 'user',
+  role: 'guest',
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };
@@ -130,15 +136,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(response.error || 'Registration failed');
     }
 
-    const { user, token } = response.data;
-    Cookies.set('auth_token', token, { expires: 7, secure: true, sameSite: 'strict' });
+    const { user, token, requiresPayment } = response.data;
+    
+    // Store token if provided (even for pending users)
+    if (token) {
+      Cookies.set('auth_token', token, { expires: 7, secure: true, sameSite: 'strict' });
+    }
     
     setState({
       user,
-      isAuthenticated: true,
+      isAuthenticated: !!token,
       isLoading: false,
       isGuest: false,
     });
+
+    // Return extra info for the UI to handle
+    return { requiresPayment, userRole: user.role, message: response.message };
   };
 
   const logout = async () => {

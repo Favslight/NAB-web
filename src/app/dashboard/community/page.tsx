@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Search, Plus, MessageCircle, Heart, Share2 } from 'lucide-react';
+import { Search, Plus, MessageCircle, Heart, Share2, Eye, EyeOff, Star, Trash2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -11,7 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { getInitials } from '@/lib/utils';
-import { communityApi } from '@/lib/api';
+import { communityApi, moderationApi } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 type CommunityPost = {
   id: string;
@@ -24,15 +26,22 @@ type CommunityPost = {
   created_at?: string;
   author_name?: string;
   author_avatar?: string;
+  is_hidden?: boolean;
+  is_featured?: boolean;
+  author_state_id?: string;
 };
 
 const categories = ['All', 'Announcements', 'Ideas', 'Help', 'Showcase', 'General'];
 
 export default function CommunityPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [posts, setPosts] = useState<CommunityPost[]>([]);
+
+  const isAdmin = user?.role === 'state_admin' || user?.role === 'super_admin';
+  const isSuperAdmin = user?.role === 'super_admin';
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -52,6 +61,9 @@ export default function CommunityPage() {
               created_at: p.created_at,
               author_name: p.author_name,
               author_avatar: p.author_avatar,
+              is_hidden: p.is_hidden,
+              is_featured: p.is_featured,
+              author_state_id: p.author_state_id,
             }))
           );
         }
@@ -63,18 +75,80 @@ export default function CommunityPage() {
     loadPosts();
   }, []);
 
+  const handleLike = async (postId: string) => {
+    try {
+      const res = await communityApi.reactToPost(postId);
+      if (res.success) {
+        // Update local state to reflect like/unlike
+        setPosts(posts.map(p => {
+          if (p.id !== postId) return p;
+          const currentLikes = p.like_count ?? 0;
+          return {
+            ...p,
+            like_count: res.message?.includes('removed') ? Math.max(0, currentLikes - 1) : currentLikes + 1
+          };
+        }));
+        toast.success(res.message || 'Reaction updated');
+      }
+    } catch (error: any) {
+      toast.error('Failed to like post: ' + (error.message || 'Unknown error'));
+    }
+  };
+
+  const handleCommentClick = (postId: string) => {
+    router.push(`/dashboard/community/post/${postId}`);
+  };
+
+  const handleModerate = async (postId: string, action: 'hide' | 'feature' | 'unfeature' | 'mark_spam' | 'delete') => {
+    if (action === 'delete' && !confirm('Are you sure you want to delete this post?')) return;
+    
+    try {
+      const res = await moderationApi.moderatePost(postId, { action });
+      if (res.success) {
+        toast.success(`Post ${action}d successfully`);
+        // Update local state
+        setPosts(posts.map(p => {
+          if (p.id !== postId) return p;
+          if (action === 'delete') return null as any;
+          if (action === 'hide' || action === 'mark_spam') return { ...p, is_hidden: true };
+          if (action === 'feature') return { ...p, is_featured: true };
+          if (action === 'unfeature') return { ...p, is_featured: false };
+          return p;
+        }).filter(Boolean));
+      }
+    } catch (error: any) {
+      toast.error('Failed to moderate post: ' + (error.message || 'Unknown error'));
+    }
+  };
+
+  const canModerate = (post: CommunityPost) => {
+    if (!isAdmin) return false;
+    // Super admins can moderate any post
+    if (isSuperAdmin) return true;
+    // State admins can only moderate posts from their state
+    return post.author_state_id === user?.state;
+  };
+
   const filteredPosts = useMemo(
     () =>
-      posts.filter((post) => {
-        const categoryMatch =
-          activeCategory === 'All' ||
-          post.category?.toLowerCase?.() === activeCategory.toLowerCase();
-        const q = searchQuery.toLowerCase();
-        const text =
-          `${post.title ?? ''} ${post.body ?? ''}`.toLowerCase();
-        return categoryMatch && text.includes(q);
-      }),
-    [posts, activeCategory, searchQuery]
+      posts
+        .filter((post) => {
+          // Non-admins can't see hidden posts
+          if (post.is_hidden && !isAdmin) return false;
+          const categoryMatch =
+            activeCategory === 'All' ||
+            post.category?.toLowerCase?.() === activeCategory.toLowerCase();
+          const q = searchQuery.toLowerCase();
+          const text = `${post.title ?? ''} ${post.body ?? ''}`.toLowerCase();
+          return categoryMatch && text.includes(q);
+        })
+        .sort((a, b) => {
+          // Featured posts first, then by date
+          if (a.is_featured && !b.is_featured) return -1;
+          if (!a.is_featured && b.is_featured) return 1;
+          return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+        }),
+    [posts, activeCategory, searchQuery, isAdmin]
   );
 
   return (
@@ -155,6 +229,20 @@ export default function CommunityPage() {
                         {post.category}
                       </Badge>
                     )}
+                    {isAdmin && (
+                      <div className="flex gap-1">
+                        {post.is_hidden && (
+                          <Badge variant="outline" className="text-rose border-rose/30 bg-rose/10">
+                            Hidden
+                          </Badge>
+                        )}
+                        {post.is_featured && (
+                          <Badge variant="outline" className="text-gold border-gold/30 bg-gold/10">
+                            Featured
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -164,12 +252,18 @@ export default function CommunityPage() {
                   <p className="text-text mb-4">
                     {post.body}
                   </p>
-                  <div className="flex items-center gap-6 text-sm text-text">
-                    <button className="flex items-center gap-2 hover:text-emerald transition-colors">
+                  <div className="flex items-center gap-6 text-sm text-text flex-wrap">
+                    <button 
+                      onClick={() => handleLike(post.id)}
+                      className="flex items-center gap-2 hover:text-emerald transition-colors"
+                    >
                       <Heart size={18} />
                       {post.like_count ?? 0}
                     </button>
-                    <button className="flex items-center gap-2 hover:text-cyan transition-colors">
+                    <button 
+                      onClick={() => handleCommentClick(post.id)}
+                      className="flex items-center gap-2 hover:text-cyan transition-colors"
+                    >
                       <MessageCircle size={18} />
                       {post.comments_count ?? 0}
                     </button>
@@ -177,6 +271,65 @@ export default function CommunityPage() {
                       <Share2 size={18} />
                       Share
                     </button>
+                    {/* Moderation controls for admins */}
+                    {canModerate(post) && (
+                      <div className="flex items-center gap-2 ml-auto border-l border-border pl-4">
+                        {post.is_hidden ? (
+                          <button
+                            onClick={() => handleModerate(post.id, 'hide')}
+                            className="flex items-center gap-1 text-emerald hover:text-emerald/80 transition-colors"
+                            title="Unhide post"
+                          >
+                            <Eye size={16} />
+                            Unhide
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleModerate(post.id, 'hide')}
+                            className="flex items-center gap-1 text-rose hover:text-rose/80 transition-colors"
+                            title="Hide post"
+                          >
+                            <EyeOff size={16} />
+                            Hide
+                          </button>
+                        )}
+                        {post.is_featured ? (
+                          <button
+                            onClick={() => handleModerate(post.id, 'unfeature')}
+                            className="flex items-center gap-1 text-gold hover:text-gold/80 transition-colors"
+                            title="Unfeature post"
+                          >
+                            <Star size={16} />
+                            Unfeature
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleModerate(post.id, 'feature')}
+                            className="flex items-center gap-1 text-gold hover:text-gold/80 transition-colors"
+                            title="Feature post"
+                          >
+                            <Star size={16} />
+                            Feature
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleModerate(post.id, 'mark_spam')}
+                          className="flex items-center gap-1 text-text hover:text-gold transition-colors"
+                          title="Mark as spam"
+                        >
+                          <AlertTriangle size={16} />
+                          Spam
+                        </button>
+                        <button
+                          onClick={() => handleModerate(post.id, 'delete')}
+                          className="flex items-center gap-1 text-rose hover:text-rose/80 transition-colors"
+                          title="Delete post"
+                        >
+                          <Trash2 size={16} />
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

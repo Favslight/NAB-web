@@ -1,10 +1,8 @@
-import Link from 'next/link';
-
-import { ArrowRight, Calendar, Clock, Users, Award, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Calendar, Clock, Users, Award, Check } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Navbar from '@/components/layout/Navbar';
 import { StaggerReveal } from '@/components/ui/stagger-reveal';
+import { ApplyButton } from '@/components/apply-button';
 
 const curriculum = [
   {
@@ -75,12 +73,12 @@ export default function ProgramPage() {
                 <span>50 Founders per Cohort</span>
               </div>
             </div>
-            <Link href="/dashboard/program" className="inline-block w-full sm:w-auto">
-              <Button size="lg" className="btn-neon-cyan w-full sm:w-auto px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]">
-                Apply Now - ₦250,000
-                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" size={20} />
-              </Button>
-            </Link>
+            <ApplyButton 
+              size="lg" 
+              className="btn-neon-cyan w-full sm:w-auto px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]"
+            >
+              Apply Now - ₦250,000
+            </ApplyButton>
           </StaggerReveal>
         </div>
       </section>
@@ -164,12 +162,12 @@ export default function ProgramPage() {
                     </div>
                   </div>
                   
-                  <Link href="/dashboard/program">
-                    <Button size="lg" className="w-full btn-neon-cyan py-5 sm:py-6 min-h-[44px]">
-                      Apply Now
-                      <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" size={20} />
-                    </Button>
-                  </Link>
+                  <ApplyButton 
+                    size="lg" 
+                    className="w-full btn-neon-cyan py-5 sm:py-6 min-h-[44px]"
+                  >
+                    Apply Now
+                  </ApplyButton>
                 </CardContent>
               </Card>
             </div>

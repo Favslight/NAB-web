@@ -12,7 +12,7 @@ export interface User {
   membership_expires_at?: string;
   referral_code: string;
   referred_by?: string;
-  role: 'user' | 'admin' | 'super_admin';
+  role: 'guest' | 'member' | 'premium_builder' | 'state_admin' | 'super_admin';
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +45,14 @@ export interface ApiResponse<T> {
   data?: T;
   message?: string;
   error?: string;
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 
 export interface MembershipPlan {
@@ -204,7 +212,7 @@ export interface PaymentTransaction {
   created_at: string;
 }
 
-export type UserRole = 'user' | 'admin' | 'super_admin';
+export type UserRole = 'guest' | 'member' | 'premium_builder' | 'state_admin' | 'super_admin';
 export type MembershipStatus = 'inactive' | 'pending' | 'active' | 'expired';
 export type PostCategory = 'announcements' | 'ideas' | 'discussions' | 'collaboration';
 export type NotificationType = 'membership' | 'referral' | 'training' | 'program' | 'community' | 'product';

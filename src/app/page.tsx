@@ -6,15 +6,26 @@ import {
   BookOpen,
   MapPin,
   Zap,
+  Cpu,
+  Brain,
+  Network,
+  CircuitBoard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { StaggerReveal } from "@/components/ui/stagger-reveal";
+import { NeuralNetworkBackground } from "@/components/neural-network";
+import { FloatingParticles } from "@/components/floating-particles";
+import { JoinButton } from "@/components/join-button";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full max-w-full bg-background overflow-x-hidden">
+    <main className="min-h-screen w-full max-w-full bg-background overflow-x-hidden relative">
+      {/* Neural Network Background - AI Visual Effect */}
+      <NeuralNetworkBackground className="opacity-60" />
+      <FloatingParticles />
+      
       <Navbar />
 
       {/* Hero Section */}
@@ -26,23 +37,44 @@ export default function Home() {
         y={36}
       >
         <div className="absolute inset-0 pattern-overlay opacity-30" />
-        <div className="section-glow" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/10 rounded-full blur-3xl" />
+        
+        {/* AI-themed glow effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald/5 rounded-full blur-3xl" />
+        
+        {/* Circuit-like decorative lines */}
+        <svg className="absolute top-20 left-10 w-32 h-32 text-emerald/20" viewBox="0 0 100 100">
+          <path d="M10,50 L40,50 L40,20 L70,20" fill="none" stroke="currentColor" strokeWidth="1" />
+          <circle cx="10" cy="50" r="3" fill="currentColor" />
+          <circle cx="70" cy="20" r="3" fill="currentColor" />
+        </svg>
+        <svg className="absolute bottom-20 right-10 w-40 h-40 text-cyan/20" viewBox="0 0 100 100">
+          <path d="M90,50 L60,50 L60,80 L30,80" fill="none" stroke="currentColor" strokeWidth="1" />
+          <circle cx="90" cy="50" r="3" fill="currentColor" />
+          <circle cx="30" cy="80" r="3" fill="currentColor" />
+        </svg>
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <StaggerReveal className="text-center w-full" amount={0.15}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald/10 border border-emerald/20 text-emerald mb-6 sm:mb-8">
-              <Sparkles size={14} className="sm:w-4 sm:h-4" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald/10 border border-emerald/20 text-emerald mb-6 sm:mb-8 backdrop-blur-sm relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <Brain size={14} className="sm:w-4 sm:h-4 animate-pulse" />
               <span className="text-xs sm:text-sm font-medium">
                 The Future of Nigerian AI
               </span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-display text-white mb-4 sm:mb-6 leading-tight px-1">
-              Nigeria Needs
+              <span className="relative">
+                Nigeria Needs
+                <CircuitBoard className="absolute -right-8 -top-4 w-6 h-6 text-emerald/40 hidden lg:block" />
+              </span>
               <br />
-              <span className="text-gradient">AI Builders.</span>
+              <span className="text-gradient relative inline-block">
+                AI Builders.
+                <Network className="absolute -left-10 top-1/2 -translate-y-1/2 w-6 h-6 text-cyan/40 hidden lg:block" />
+              </span>
               <br />
               Become One.
             </h1>
@@ -77,12 +109,19 @@ export default function Home() {
       <ScrollReveal
         data-section="what-is-nab"
         variant="right"
-        className="w-full py-12 sm:py-16 md:py-20 lg:py-32"
+        className="w-full py-12 sm:py-16 md:py-20 lg:py-32 relative"
         delay={0.06}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* AI nodes decoration */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-emerald/10 to-transparent rounded-full blur-2xl" />
+        
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Cpu className="w-5 h-5 text-emerald" />
+                <span className="text-emerald text-sm font-medium tracking-wider uppercase">Neural Network</span>
+              </div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-white mb-4 sm:mb-6">
                 What is <span className="text-emerald">NAB</span>?
               </h2>
@@ -107,23 +146,35 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="glass rounded-2xl p-4 sm:p-6 lg:p-8">
+            <div className="glass rounded-2xl p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+              {/* AI stats decoration */}
+              <div className="absolute -top-10 -right-10 w-20 h-20 bg-emerald/10 rounded-full blur-xl" />
+              <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-cyan/10 rounded-full blur-xl" />
+              
               <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald mb-1 sm:mb-2">500+</div>
-                  <div className="text-text text-xs sm:text-sm">AI Products Built</div>
+                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Brain className="w-5 h-5 text-emerald/50 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald mb-1 sm:mb-2 relative z-10">500+</div>
+                  <div className="text-text text-xs sm:text-sm relative z-10">AI Products Built</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-cyan mb-1 sm:mb-2">50+</div>
-                  <div className="text-text text-xs sm:text-sm">Startups Funded</div>
+                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Network className="w-5 h-5 text-cyan/50 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-cyan mb-1 sm:mb-2 relative z-10">50+</div>
+                  <div className="text-text text-xs sm:text-sm relative z-10">Startups Funded</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gold mb-1 sm:mb-2">₦50M+</div>
-                  <div className="text-text text-xs sm:text-sm">In Referral Rewards</div>
+                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Zap className="w-5 h-5 text-gold/50 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gold mb-1 sm:mb-2 relative z-10">₦50M+</div>
+                  <div className="text-text text-xs sm:text-sm relative z-10">In Referral Rewards</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald mb-1 sm:mb-2">100+</div>
-                  <div className="text-text text-xs sm:text-sm">Free Training Sessions</div>
+                <div className="text-center p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-midnight-light/50 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <BookOpen className="w-5 h-5 text-emerald/50 mx-auto mb-2" />
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald mb-1 sm:mb-2 relative z-10">100+</div>
+                  <div className="text-text text-xs sm:text-sm relative z-10">Free Training Sessions</div>
                 </div>
               </div>
             </div>
@@ -139,6 +190,24 @@ export default function Home() {
         delay={0.05}
       >
         <div className="section-glow-horizontal" />
+        
+        {/* Neural connection lines decoration */}
+        <svg className="absolute top-10 left-1/4 w-64 h-16 text-cyan/10 hidden lg:block" viewBox="0 0 200 50">
+          <path d="M0,25 Q50,5 100,25 T200,25" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4,4">
+            <animate attributeName="stroke-dashoffset" from="0" to="8" dur="1s" repeatCount="indefinite" />
+          </path>
+          <circle cx="0" cy="25" r="4" fill="currentColor" className="animate-pulse" />
+          <circle cx="100" cy="25" r="4" fill="currentColor" className="animate-pulse" style={{ animationDelay: '0.5s' }} />
+          <circle cx="200" cy="25" r="4" fill="currentColor" className="animate-pulse" style={{ animationDelay: '1s' }} />
+        </svg>
+        <svg className="absolute bottom-10 right-1/4 w-64 h-16 text-emerald/10 hidden lg:block" viewBox="0 0 200 50">
+          <path d="M200,25 Q150,45 100,25 T0,25" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4,4">
+            <animate attributeName="stroke-dashoffset" from="0" to="8" dur="1s" repeatCount="indefinite" />
+          </path>
+          <circle cx="200" cy="25" r="4" fill="currentColor" className="animate-pulse" />
+          <circle cx="100" cy="25" r="4" fill="currentColor" className="animate-pulse" style={{ animationDelay: '0.5s' }} />
+          <circle cx="0" cy="25" r="4" fill="currentColor" className="animate-pulse" style={{ animationDelay: '1s' }} />
+        </svg>
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <StaggerReveal className="text-center mb-10 sm:mb-16 w-full">
             <p className="label-accent mb-2">How it works</p>
@@ -174,11 +243,21 @@ export default function Home() {
                 icon: Zap,
               },
             ].map((item, index) => (
-              <div key={index} className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-hover">
+              <div key={index} className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-hover relative overflow-hidden group">
+                {/* Connection node effect */}
+                <div className="absolute top-4 right-4 w-2 h-2 bg-emerald/50 rounded-full animate-pulse" style={{ animationDelay: `${index * 0.3}s` }} />
+                <div className="absolute bottom-4 left-4 w-1.5 h-1.5 bg-cyan/50 rounded-full animate-pulse" style={{ animationDelay: `${index * 0.3 + 0.15}s` }} />
+                
                 <div className="text-4xl sm:text-5xl font-bold text-emerald/20 mb-3 sm:mb-4">{item.step}</div>
-                <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-emerald mb-3 sm:mb-4" />
+                <div className="relative">
+                  <item.icon className="w-8 h-8 sm:w-10 sm:h-10 text-emerald mb-3 sm:mb-4 relative z-10" />
+                  <div className="absolute top-0 left-0 w-8 h-8 sm:w-10 sm:h-10 bg-emerald/20 blur-xl rounded-full" />
+                </div>
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">{item.title}</h3>
                 <p className="text-text text-sm sm:text-base">{item.description}</p>
+                
+                {/* Hover glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald/5 via-cyan/5 to-emerald/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
             ))}
           </div>
@@ -239,11 +318,12 @@ export default function Home() {
                     <div className="text-text text-sm sm:text-base mb-4 sm:mb-6">
                       One-time membership fee
                     </div>
-                    <Link href="/signup">
-                      <Button size="lg" className="w-full btn-neon py-5 sm:py-6 min-h-[44px]">
-                        Join NAB Now
-                      </Button>
-                    </Link>
+                    <JoinButton 
+                      size="lg" 
+                      className="w-full btn-neon py-5 sm:py-6 min-h-[44px]"
+                    >
+                      Join NAB Now
+                    </JoinButton>
                     <p className="text-sm text-text/60 mt-4">
                       non-refundable
                     </p>
@@ -298,10 +378,24 @@ export default function Home() {
                 desc: "Pitch to investors for funding",
               },
             ].map((phase, index) => (
-              <div key={index} className="glass rounded-xl p-4 sm:p-6 card-hover">
+              <div key={index} className="glass rounded-xl p-4 sm:p-6 card-hover relative overflow-hidden group">
+                {/* AI node indicators */}
+                <div className="absolute top-2 right-2 flex gap-1">
+                  <div className="w-1.5 h-1.5 bg-emerald/40 rounded-full animate-pulse" style={{ animationDelay: `${index * 0.2}s` }} />
+                  <div className="w-1 h-1 bg-cyan/40 rounded-full animate-pulse" style={{ animationDelay: `${index * 0.2 + 0.1}s` }} />
+                </div>
+                
+                {/* Progress connector line */}
+                {index < 3 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-emerald/30 to-cyan/30" />
+                )}
+                
                 <div className="text-emerald text-xs sm:text-sm font-medium mb-2">{phase.week}</div>
                 <h3 className="text-base sm:text-lg font-bold text-white mb-2">{phase.title}</h3>
                 <p className="text-text text-xs sm:text-sm">{phase.desc}</p>
+                
+                {/* Hover glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald/5 to-cyan/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>
@@ -352,17 +446,23 @@ export default function Home() {
             ].map((state) => (
               <div
                 key={state}
-                className="glass rounded-lg p-3 sm:p-4 text-center card-hover cursor-pointer min-h-[60px] flex flex-col justify-center"
+                className="glass rounded-lg p-3 sm:p-4 text-center card-hover cursor-pointer min-h-[60px] flex flex-col justify-center relative overflow-hidden group"
               >
+                {/* AI node effect */}
+                <div className="absolute top-2 right-2 w-1 h-1 bg-emerald/40 rounded-full animate-pulse" />
+                
                 <div className="text-emerald text-xs font-medium">NAB</div>
                 <div className="text-white font-semibold text-sm sm:text-base truncate" title={state}>{state}</div>
+                
+                {/* Hover glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>
         </div>
       </ScrollReveal>
 
-      {/* Founder Vision */}
+      {/* Vision Section - Enhanced with AI feel */}
       <ScrollReveal
         data-section="vision"
         variant="fade"
@@ -370,13 +470,22 @@ export default function Home() {
         amount={0.15}
       >
         <div className="section-glow-horizontal" />
+        
+        {/* Neural decoration */}
+        <div className="absolute top-10 left-10 w-40 h-40 border border-emerald/10 rounded-full hidden lg:block" />
+        <div className="absolute bottom-10 right-10 w-60 h-60 border border-cyan/10 rounded-full hidden lg:block" />
+        <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-emerald/50 rounded-full animate-pulse hidden lg:block" />
+        <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-cyan/50 rounded-full animate-pulse hidden lg:block" style={{ animationDelay: '0.5s' }} />
+        
         <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <StaggerReveal className="text-center w-full">
             <p className="label-accent mb-2">Vision</p>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-white mb-6 sm:mb-8">
               The Vision
             </h2>
-            <blockquote className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-text font-light italic mb-6 sm:mb-8 px-2">
+            <blockquote className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-text font-light italic mb-6 sm:mb-8 px-2 relative">
+              <Brain className="absolute -left-4 -top-4 w-8 h-8 text-emerald/20 hidden lg:block" />
+              <Network className="absolute -right-4 -bottom-4 w-8 h-8 text-cyan/20 hidden lg:block" />
               &ldquo;In the next 10 years, Nigeria will produce AI builders who
               will solve problems not just for Africa, but for the entire world.
               NAB is the movement that will make that happen.&rdquo;
@@ -433,11 +542,15 @@ export default function Home() {
       </ScrollReveal>
 
       {/* Footer */}
-      <footer className="py-8 sm:py-12 border-t border-border w-full">
+      <footer className="py-8 sm:py-12 border-t border-border w-full relative">
+        {/* Neural net footer decoration */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald/30 to-transparent" />
+        
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div>
-              <div className="text-xl sm:text-2xl font-bold font-display text-gradient mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 text-xl sm:text-2xl font-bold font-display text-gradient mb-3 sm:mb-4">
+                <CircuitBoard className="w-6 h-6" />
                 AIBUILDERS.NG
               </div>
               <p className="text-text text-xs sm:text-sm">

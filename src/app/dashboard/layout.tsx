@@ -19,6 +19,10 @@ import {
   LogOut,
   Menu,
   GraduationCap,
+  Shield,
+  CheckCircle,
+  FileText,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -28,7 +32,8 @@ import GuestBanner from '@/components/auth/GuestBanner';
 import { getInitials } from '@/lib/utils';
 import Logo from '@/components/logo.png';
 
-const sidebarItems = [
+// Regular user sidebar items
+const userSidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: User, label: 'Profile', href: '/dashboard/profile' },
   { icon: CreditCard, label: 'Membership', href: '/dashboard/membership' },
@@ -42,6 +47,35 @@ const sidebarItems = [
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
 ];
 
+// Super admin sidebar items - no State Hub, Membership, etc.
+const superAdminSidebarItems = [
+  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+  { icon: Users, label: 'Users', href: '/dashboard/admin/users' },
+  { icon: CheckCircle, label: 'Applications', href: '/dashboard/admin/applications' },
+  { icon: Package, label: 'Products', href: '/dashboard/admin/products' },
+  { icon: Layers, label: 'Cohorts', href: '/dashboard/admin/cohorts' },
+  { icon: BookOpen, label: 'Trainings', href: '/dashboard/admin/trainings' },
+  { icon: FileText, label: 'Audit Logs', href: '/dashboard/admin/audit-logs' },
+  { icon: Settings, label: 'Settings', href: '/dashboard/admin/settings' },
+];
+
+// State admin sidebar items - includes user features + admin management
+const stateAdminSidebarItems = [
+  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+  { icon: User, label: 'Profile', href: '/dashboard/profile' },
+  { icon: BookOpen, label: 'Learning Center', href: '/dashboard/learning' },
+  { icon: MessageSquare, label: 'Community', href: '/dashboard/community' },
+  { icon: MapPin, label: 'State Hub', href: '/dashboard/state-hub' },
+  { icon: Package, label: 'Products', href: '/dashboard/products' },
+  { icon: GraduationCap, label: 'AI Program', href: '/dashboard/program' },
+  { icon: Users, label: 'Referrals', href: '/dashboard/referrals' },
+  { icon: Bell, label: 'Notifications', href: '/dashboard/notifications' },
+  // Admin management section
+  { icon: Shield, label: 'Admin Users', href: '/dashboard/admin/users' },
+  { icon: CheckCircle, label: 'Applications', href: '/dashboard/admin/applications' },
+  { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+];
+
 export default function DashboardLayout({
   children,
 }: {
@@ -51,19 +85,42 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Determine which sidebar to show based on role
+  const isSuperAdmin = user?.role === 'super_admin';
+  const isStateAdmin = user?.role === 'state_admin';
+  const isAdmin = isSuperAdmin || isStateAdmin;
+
+  const sidebarItems = isSuperAdmin
+    ? superAdminSidebarItems
+    : isStateAdmin
+    ? stateAdminSidebarItems
+    : userSidebarItems;
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-6 border-b border-border">
         <Link href="/" className="text-xl font-bold font-display text-gradient">
           AIBUILDERS.NG
         </Link>
+        {isSuperAdmin && (
+          <div className="flex items-center gap-1 mt-1">
+            <Shield className="text-purple" size={14} />
+            <span className="text-xs text-purple font-medium">Super Admin</span>
+          </div>
+        )}
+        {isStateAdmin && (
+          <div className="flex items-center gap-1 mt-1">
+            <Shield className="text-cyan" size={14} />
+            <span className="text-xs text-cyan font-medium">State Admin</span>
+          </div>
+        )}
       </div>
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
-          
+
           return (
             <Link
               key={item.href}
@@ -71,7 +128,11 @@ export default function DashboardLayout({
               onClick={() => setIsMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive
-                  ? 'bg-emerald/10 text-emerald border border-emerald/30'
+                  ? isSuperAdmin
+                    ? 'bg-purple/10 text-purple border border-purple/30'
+                    : isStateAdmin
+                    ? 'bg-cyan/10 text-cyan border border-cyan/30'
+                    : 'bg-emerald/10 text-emerald border border-emerald/30'
                   : 'text-text hover:bg-midnight-light hover:text-white'
               }`}
             >

@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { communityApi, uploadToCloudinary } from '@/lib/api';
+import { communityApi } from '@/lib/api';
 import { toast } from 'sonner';
 
 const categories = [
@@ -27,8 +27,7 @@ export default function NewPostPage() {
   const [category, setCategory] = useState('discussion');
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
-  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddTag = () => {
@@ -42,24 +41,29 @@ export default function NewPostPage() {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploading(true);
-    try {
-      const url = await uploadToCloudinary(file, `community/${type}s`);
-      setMediaUrls([...mediaUrls, url]);
-      toast.success(`${type} uploaded successfully`);
-    } catch (error) {
-      toast.error(`Failed to upload ${type}`);
-    } finally {
-      setIsUploading(false);
+    // Validate file type
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+
+    if (type === 'image' && !isImage) {
+      toast.error('Please select an image file');
+      return;
     }
+    if (type === 'video' && !isVideo) {
+      toast.error('Please select a video file');
+      return;
+    }
+
+    setMediaFiles([...mediaFiles, file]);
+    toast.success(`${type} added successfully`);
   };
 
-  const handleRemoveMedia = (urlToRemove: string) => {
-    setMediaUrls(mediaUrls.filter((url) => url !== urlToRemove));
+  const handleRemoveMedia = (indexToRemove: number) => {
+    setMediaFiles(mediaFiles.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = async () => {
@@ -70,13 +74,18 @@ export default function NewPostPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await communityApi.createPost({
-        title: title.trim(),
-        content: body.trim(),
-        post_type: category as any,
-        tags,
-        media_urls: mediaUrls,
+      // Build FormData for multipart upload
+      const formData = new FormData();
+      formData.append('title', title.trim());
+      formData.append('content', body.trim());
+      formData.append('post_type', category);
+
+      // Append media files
+      mediaFiles.forEach((file) => {
+        formData.append('files', file);
       });
+
+      const response = await communityApi.createPost(formData);
 
       if (response.success) {
         toast.success('Post created successfully');
@@ -182,9 +191,8 @@ export default function NewPostPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'image')}
+                    onChange={(e) => handleFileSelect(e, 'image')}
                     className="hidden"
-                    disabled={isUploading}
                   />
                 </label>
                 <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-midnight-light text-text cursor-pointer hover:bg-midnight-light/80 transition-colors">
@@ -193,23 +201,21 @@ export default function NewPostPage() {
                   <input
                     type="file"
                     accept="video/*"
-                    onChange={(e) => handleFileUpload(e, 'video')}
+                    onChange={(e) => handleFileSelect(e, 'video')}
                     className="hidden"
-                    disabled={isUploading}
                   />
                 </label>
               </div>
-              {isUploading && <p className="text-sm text-text">Uploading...</p>}
               <div className="flex flex-wrap gap-2 mt-2">
-                {mediaUrls.map((url, index) => (
+                {mediaFiles.map((file, index) => (
                   <div key={index} className="relative group">
-                    {url.match(/\.(mp4|webm|mov)$/i) ? (
-                      <video src={url} className="w-32 h-32 object-cover rounded-lg" />
+                    {file.type.startsWith('video/') ? (
+                      <video src={URL.createObjectURL(file)} className="w-32 h-32 object-cover rounded-lg" />
                     ) : (
-                      <img src={url} alt="" className="w-32 h-32 object-cover rounded-lg" />
+                      <img src={URL.createObjectURL(file)} alt="" className="w-32 h-32 object-cover rounded-lg" />
                     )}
                     <button
-                      onClick={() => handleRemoveMedia(url)}
+                      onClick={() => handleRemoveMedia(index)}
                       className="absolute -top-2 -right-2 p-1 bg-rose rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X size={12} />

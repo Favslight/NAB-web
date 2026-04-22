@@ -99,7 +99,7 @@ export const authApi = {
     password: string;
     referral_code?: string;
   }) =>
-    apiClient.post<{ user: import('@/types').User; token: string }>('/api/auth/register', data),
+    apiClient.post<{ user: import('@/types').User; token: string; requiresPayment?: boolean; message?: string }>('/api/auth/register', data),
   
   logout: () => apiClient.post('/api/auth/logout'),
   
@@ -238,6 +238,51 @@ export const trainingApi = {
   // GET /api/trainings/:id
   getById: (id: string) => apiClient.get<any>(`/api/trainings/${id}`),
 
+  // POST /api/trainings (Admin only)
+  create: (data: {
+    title: string;
+    description?: string;
+    category?: string;
+    access_level?: string;
+    duration_minutes?: number;
+    is_published?: boolean;
+  }) => apiClient.post<any>('/api/trainings', data),
+
+  // PUT /api/trainings/:id (Admin only)
+  update: (id: string, data: {
+    title?: string;
+    description?: string;
+    category?: string;
+    access_level?: string;
+    duration_minutes?: number;
+    is_published?: boolean;
+  }) => apiClient.put<any>(`/api/trainings/${id}`, data),
+
+  // DELETE /api/trainings/:id (Admin only)
+  delete: (id: string) => apiClient.delete<void>(`/api/trainings/${id}`),
+
+  // POST /api/trainings/:id/lessons (Admin only)
+  createLesson: (trainingId: string, data: {
+    title: string;
+    description?: string;
+    order_index?: number;
+    duration_minutes?: number;
+    is_published?: boolean;
+  }) => apiClient.post<any>(`/api/trainings/${trainingId}/lessons`, data),
+
+  // PUT /api/trainings/:id/lessons/:lessonId (Admin only)
+  updateLesson: (trainingId: string, lessonId: string, data: {
+    title?: string;
+    description?: string;
+    order_index?: number;
+    duration_minutes?: number;
+    is_published?: boolean;
+  }) => apiClient.put<any>(`/api/trainings/${trainingId}/lessons/${lessonId}`, data),
+
+  // DELETE /api/trainings/:id/lessons/:lessonId (Admin only)
+  deleteLesson: (trainingId: string, lessonId: string) =>
+    apiClient.delete<void>(`/api/trainings/${trainingId}/lessons/${lessonId}`),
+
   // POST /api/trainings/:id/progress
   updateProgress: (
     trainingId: string,
@@ -261,15 +306,8 @@ export const communityApi = {
   // GET /api/community/posts/:id
   getPostById: (id: string) => apiClient.get<any>(`/api/community/posts/${id}`),
 
-  // POST /api/community/posts
-  createPost: (data: {
-    title: string;
-    content: string;
-    post_type?: 'discussion' | 'question' | 'showcase' | 'event' | 'job';
-    hub_id?: string;
-    tags?: string[];
-    media_urls?: string[];
-  }) => apiClient.post<any>('/api/community/posts', data),
+  // POST /api/community/posts (multipart/form-data with files)
+  createPost: (data: FormData) => apiClient.upload<any>('/api/community/posts', data),
 
   // POST /api/community/posts/:id/comments
   addComment: (

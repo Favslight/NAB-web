@@ -4,15 +4,19 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
+    "[project]/src/app/dashboard/admin/trainings/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
+    ],
+    "[project]/src/app/dashboard/admin/users/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
+    ],
     "[project]/src/app/dashboard/community/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
-    "[project]/src/app/dashboard/learning/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
-    "[project]/src/app/dashboard/membership/page": [
+    "[project]/src/app/dashboard/community/post/[id]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
@@ -20,11 +24,7 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
-    "[project]/src/app/dashboard/profile/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
-    "[project]/src/app/dashboard/settings/page": [
+    "[project]/src/app/dashboard/program/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
@@ -37,6 +37,10 @@
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
     "[project]/src/app/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
+    ],
+    "[project]/src/app/program/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],

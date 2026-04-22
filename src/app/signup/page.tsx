@@ -35,9 +35,27 @@ export default function SignupPage() {
     setIsLoading(true);
     
     try {
-      await register(formData);
-      toast.success('Welcome to NAB!');
-      router.push('/dashboard');
+      const result = await register(formData);
+      
+      // Show backend message
+      if (result?.message) {
+        toast.success(result.message);
+      }
+      
+      // Handle different user scenarios
+      if (result?.userRole === 'state_admin') {
+        // First user in state - auto state_admin, no payment needed
+        toast.success('You are now the State Admin for your region!');
+        router.push('/dashboard');
+      } else if (result?.requiresPayment) {
+        // Regular user with membership fee enabled - redirect to payment
+        toast.success('Please complete payment to activate your membership');
+        router.push('/dashboard/payment');
+      } else {
+        // Free membership or already member - go to dashboard
+        toast.success('Welcome to NAB!');
+        router.push('/dashboard');
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Registration failed');
     } finally {
@@ -201,7 +219,7 @@ export default function SignupPage() {
                 className="w-full btn-neon py-5 sm:py-6 rounded-xl min-h-[44px] text-sm sm:text-base"
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating account...' : 'Join NAB - ₦25,000'}
+                {isLoading ? 'Creating account...' : 'Create Account'}
                 <ArrowRight className="ml-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" size={18} />
               </Button>
             </form>
