@@ -158,7 +158,7 @@ export default function ProgramPage() {
                     </div>
                     <div className="glass rounded-lg p-4">
                       <div className="text-sm text-text mb-1">Application Deadline</div>
-                      <div className="text-white font-semibold">May 15 - June 25</div>
+                      <div className="text-white font-semibold">May 10 - June 25</div>
                     </div>
                   </div>
                   
