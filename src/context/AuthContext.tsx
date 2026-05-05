@@ -9,6 +9,7 @@ interface RegisterResult {
   requiresPayment?: boolean;
   userRole?: string;
   message?: string;
+  pendingApproval?: boolean;
 }
 
 interface AuthContextType extends AuthState {
@@ -136,9 +137,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(response.error || 'Registration failed');
     }
 
-    const { user, token, requiresPayment } = response.data;
+    const { user, token, requiresPayment, pendingApproval } = response.data;
     
-    // Store token if provided (even for pending users)
+    // If pending approval, don't set token or authenticate
+    if (pendingApproval) {
+      return { pendingApproval: true, userRole: user.role, message: response.message };
+    }
+    
+    // Store token if provided (normal flow)
     if (token) {
       Cookies.set('auth_token', token, { expires: 7, secure: true, sameSite: 'strict' });
     }

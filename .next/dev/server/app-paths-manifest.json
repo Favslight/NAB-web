@@ -1,14 +1,12 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/admin/applications/page": "app/dashboard/admin/applications/page.js",
+  "/dashboard/admin/pending-users/page": "app/dashboard/admin/pending-users/page.js",
+  "/dashboard/admin/settings/page": "app/dashboard/admin/settings/page.js",
   "/dashboard/admin/trainings/page": "app/dashboard/admin/trainings/page.js",
   "/dashboard/admin/users/page": "app/dashboard/admin/users/page.js",
-  "/dashboard/community/page": "app/dashboard/community/page.js",
-  "/dashboard/community/post/[id]/page": "app/dashboard/community/post/[id]/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/program/page": "app/dashboard/program/page.js",
-  "/dashboard/state-hub/page": "app/dashboard/state-hub/page.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
-  "/program/page": "app/program/page.js",
-  "/signup/page": "app/signup/page.js"
+  "/signup/page": "app/signup/page.js",
+  "/signup/waitlist/page": "app/signup/waitlist/page.js"
 }

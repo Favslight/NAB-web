@@ -3,7 +3,6 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
-import SnowBackground from "@/components/SnowBackground";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,7 +39,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} h-full min-h-screen w-full max-w-full overflow-x-hidden`}>
       <body className={`${inter.className} h-full min-h-screen w-full max-w-full overflow-x-hidden`}>
-        <SnowBackground />
         <AuthProvider>
           {children}
           <Toaster

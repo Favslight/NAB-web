@@ -36,12 +36,35 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError<ApiResponse<unknown>>) => {
+        // Handle 401 Maintenance Mode (check if error indicates maintenance)
         if (error.response?.status === 401) {
-          Cookies.remove('auth_token');
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
+          const errorMessage = error.response.data?.error?.toLowerCase?.() || '';
+          const isMaintenance = errorMessage.includes('maintenance') ||
+                                error.response.headers['x-maintenance-mode'] === 'true';
+
+          if (isMaintenance) {
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/maintenance')) {
+              window.location.href = '/maintenance';
+            }
+          } else {
+            // Regular unauthorized - clear token and redirect to login
+            Cookies.remove('auth_token');
+            if (typeof window !== 'undefined') {
+              window.location.href = '/login';
+            }
+          }
+          return Promise.reject(error);
+        }
+
+        // Handle 403 Pending Approval
+        if (error.response?.status === 403) {
+          const errorMessage = error.response.data?.error?.toLowerCase?.() || '';
+          if (errorMessage.includes('pending admin approval')) {
+            // Add a custom flag to the error so UI can handle it
+            (error as any).isPendingApproval = true;
           }
         }
+
         return Promise.reject(error);
       }
     );
@@ -99,7 +122,7 @@ export const authApi = {
     password: string;
     referral_code?: string;
   }) =>
-    apiClient.post<{ user: import('@/types').User; token: string; requiresPayment?: boolean; message?: string }>('/api/auth/register', data),
+    apiClient.post<{ user: import('@/types').User; token: string; requiresPayment?: boolean; pendingApproval?: boolean; message?: string }>('/api/auth/register', data),
   
   logout: () => apiClient.post('/api/auth/logout'),
   
@@ -489,6 +512,13 @@ export const adminApi = {
 
   updateSetting: (key: string, value: string) =>
     apiClient.put<any>(`/api/admin/settings/${encodeURIComponent(key)}`, { value }),
+
+  // Pending users (admin approval)
+  getPendingUsers: (page?: number, limit?: number) =>
+    apiClient.get<any[]>('/api/admin/pending-users', { page, limit }),
+
+  reviewPendingUser: (id: string, action: 'approve' | 'reject') =>
+    apiClient.post<null>(`/api/admin/pending-users/${id}/review`, { action }),
 };
 
 // Moderation API

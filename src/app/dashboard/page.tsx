@@ -17,6 +17,7 @@ import {
   CheckCircle,
   Package,
   DollarSign,
+  Clock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,8 +46,8 @@ interface DashboardNotification {
 }
 
 interface AdminDashboardData {
-  users: { total: number; members: number };
-  pending: { products: number; applications: number };
+  users: { total: number; members: number; pending_approval?: number };
+  pending: { products: number; applications: number; users?: number };
   content: { posts: number };
   revenue: { total: number; recent_transactions: number };
   isStateAdmin: boolean;
@@ -264,6 +265,28 @@ export default function DashboardPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Pending Users Card */}
+              <Link href="/dashboard/admin/pending-users">
+                <Card className="glass card-hover border-amber/20 cursor-pointer">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 rounded-lg bg-amber/20 text-amber">
+                        <Clock size={20} />
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold text-white">
+                      {adminData.users?.pending_approval ?? adminData.pending?.users ?? 0}
+                    </div>
+                    <div className="text-sm text-text">Pending Approvals</div>
+                    {(adminData.users?.pending_approval ?? 0) > 0 && (
+                      <div className="text-xs text-amber mt-1">
+                        Click to review
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
 
               <Card className="glass card-hover border-rose/20">
                 <CardContent className="p-6">

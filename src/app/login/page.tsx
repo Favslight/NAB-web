@@ -48,8 +48,13 @@ export default function LoginPage() {
       });
       toast.success('Welcome back!');
       router.push('/dashboard');
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed');
+    } catch (error: any) {
+      // Check for pending approval error
+      if (error.isPendingApproval) {
+        toast.error('Your account is pending admin approval. Please wait for approval before logging in.');
+      } else {
+        toast.error(error instanceof Error ? error.message : 'Login failed');
+      }
     } finally {
       setIsLoading(false);
     }

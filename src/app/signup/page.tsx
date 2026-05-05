@@ -43,7 +43,10 @@ export default function SignupPage() {
       }
       
       // Handle different user scenarios
-      if (result?.userRole === 'state_admin') {
+      if (result?.pendingApproval) {
+        // Admin approval required - redirect to waitlist page
+        router.push('/signup/waitlist');
+      } else if (result?.userRole === 'state_admin') {
         // First user in state - auto state_admin, no payment needed
         toast.success('You are now the State Admin for your region!');
         router.push('/dashboard');

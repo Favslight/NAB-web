@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Settings, Save, RefreshCw, Key, Edit2, Check, X } from 'lucide-react';
+import { Settings, Save, RefreshCw, Key, Edit2, Check, X, Shield, UserCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -75,6 +75,24 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handleQuickToggle = async (key: string, checked: boolean) => {
+    setSaving(true);
+    try {
+      const res = await adminApi.updateSetting(key, checked.toString());
+      if (res.success) {
+        toast.success(`${formatKey(key)} ${checked ? 'enabled' : 'disabled'}`);
+        loadSettings(); // Refresh settings
+      } else {
+        toast.error('Failed to update setting');
+      }
+    } catch (error: any) {
+      toast.error('Failed to update setting: ' + (error.message || 'Unknown error'));
+      console.error('Update setting error:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const formatKey = (key: string) => {
     return key
       .replace(/_/g, ' ')
@@ -110,6 +128,53 @@ export default function AdminSettingsPage() {
             Refresh
           </Button>
         </div>
+
+        {/* Admin Approval Toggle */}
+        <Card className="glass border-emerald/20">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-emerald/10">
+                  <Shield className="text-emerald" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white text-lg">Require Admin Approval</h3>
+                  <p className="text-text text-sm mt-1 max-w-xl">
+                    When enabled, new users must be approved by an admin before they can log in.
+                    Users will see a &quot;waitlist&quot; message after signup and cannot access the platform until approved.
+                  </p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={settings.find(s => s.key === 'require_admin_approval')?.value === 'true'}
+                  onChange={(e) => {
+                    const setting = settings.find(s => s.key === 'require_admin_approval');
+                    if (setting) {
+                      handleQuickToggle('require_admin_approval', e.target.checked);
+                    }
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-14 h-7 bg-midnight-light peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald"></div>
+                <span className="ml-3 text-sm font-medium text-text">
+                  {settings.find(s => s.key === 'require_admin_approval')?.value === 'true' ? 'Enabled' : 'Disabled'}
+                </span>
+              </label>
+            </div>
+            
+            {settings.find(s => s.key === 'require_admin_approval')?.value === 'true' && (
+              <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-start gap-2">
+                <UserCheck className="text-amber-500 shrink-0" size={18} />
+                <p className="text-sm text-amber-200/80">
+                  <span className="font-medium">Pending approvals:</span> New users will be added to the 
+                  <a href="/dashboard/admin/pending-users" className="text-emerald hover:underline ml-1">pending users</a> queue.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Settings Table */}
         <Card className="glass">

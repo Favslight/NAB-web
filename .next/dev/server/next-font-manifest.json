@@ -1,6 +1,14 @@
 {
   "app": {
-    "[project]/src/app/_not-found/page": [
+    "[project]/src/app/dashboard/admin/applications/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
+    ],
+    "[project]/src/app/dashboard/admin/pending-users/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
+    ],
+    "[project]/src/app/dashboard/admin/settings/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
@@ -12,23 +20,7 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
-    "[project]/src/app/dashboard/community/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
-    "[project]/src/app/dashboard/community/post/[id]/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
     "[project]/src/app/dashboard/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
-    "[project]/src/app/dashboard/program/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
-      "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
-    ],
-    "[project]/src/app/dashboard/state-hub/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
@@ -40,11 +32,11 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
-    "[project]/src/app/program/page": [
+    "[project]/src/app/signup/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ],
-    "[project]/src/app/signup/page": [
+    "[project]/src/app/signup/waitlist/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/0c89a48fa5027cee-s.p.4564287c.woff2"
     ]
