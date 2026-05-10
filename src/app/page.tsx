@@ -15,17 +15,11 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { StaggerReveal } from "@/components/ui/stagger-reveal";
-import { NeuralNetworkBackground } from "@/components/neural-network";
-import { FloatingParticles } from "@/components/floating-particles";
 import { JoinButton } from "@/components/join-button";
 
 export default function Home() {
   return (
     <main className="min-h-screen w-full max-w-full bg-background overflow-x-hidden relative">
-      {/* Neural Network Background - AI Visual Effect */}
-      <NeuralNetworkBackground className="opacity-60" />
-      <FloatingParticles />
-      
       <Navbar />
 
       {/* Hero Section */}
@@ -225,7 +219,7 @@ export default function Home() {
                 step: "01",
                 title: "Join the Community",
                 description:
-                  "Pay ₦25,000 membership fee and get instant access to the NAB community.",
+                  "Pay ₦30,000 membership fee and get instant access to the NAB community.",
                 icon: Users,
               },
               {
@@ -280,7 +274,7 @@ export default function Home() {
                   Become a NAB Member
                 </h2>
                 <p className="text-text text-base sm:text-lg mb-6 sm:mb-8">
-                  Join for ₦25,000 and unlock lifetime access to Nigeria&apos;s
+                  Join for ₦30,000 and unlock lifetime access to Nigeria&apos;s
                   premier AI community.
                 </p>
                 <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
@@ -313,7 +307,7 @@ export default function Home() {
                 <div className="glass-strong rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-emerald/30">
                   <div className="text-center">
                     <div className="text-4xl sm:text-5xl font-bold text-emerald mb-2">
-                      ₦25,000
+                      ₦30,000
                     </div>
                     <div className="text-text text-sm sm:text-base mb-4 sm:mb-6">
                       One-time membership fee

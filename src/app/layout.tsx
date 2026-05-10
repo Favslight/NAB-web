@@ -42,12 +42,17 @@ export default function RootLayout({
         <AuthProvider>
           {children}
           <Toaster
-            position="top-right"
+            position="top-center"
             toastOptions={{
+              duration: 5000,
               style: {
                 background: "hsl(224, 24%, 14%)",
                 color: "hsl(210, 20%, 94%)",
                 border: "1px solid rgba(29, 184, 122, 0.25)",
+                maxWidth: "90vw",
+                width: "auto",
+                fontSize: "14px",
+                padding: "12px 16px",
               },
             }}
           />

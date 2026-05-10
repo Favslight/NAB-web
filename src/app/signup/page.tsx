@@ -69,16 +69,16 @@ export default function SignupPage() {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="flex-1 flex items-center justify-center pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-4">
+      <div className="flex-1 flex items-center justify-center pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 md:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 pattern-overlay opacity-30 pointer-events-none" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-emerald/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-cyan/5 rounded-full blur-3xl pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.08 }}
-          className="relative w-full max-w-lg mx-auto min-w-0"
+          className="relative w-full max-w-lg mx-auto"
         >
           <div className="glass-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 glow-edge border border-border/50 transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(0,255,166,0.06)]">
             <div className="text-center mb-6 sm:mb-8">
@@ -93,9 +93,9 @@ export default function SignupPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="full_name" className="text-text">Full Name</Label>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="full_name" className="text-text text-sm sm:text-base">Full Name</Label>
                 <div className="relative">
                   <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
                   <Input
@@ -109,8 +109,8 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-text">Email</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="email" className="text-text text-sm sm:text-base">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
                   <Input
@@ -125,8 +125,8 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-text">Phone Number</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="phone" className="text-text text-sm sm:text-base">Phone Number</Label>
                 <div className="relative">
                   <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
                   <Input
@@ -141,9 +141,9 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="state" className="text-text text-sm">State</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="state" className="text-text text-xs sm:text-sm">State</Label>
                   <div className="relative">
                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50 pointer-events-none" size={18} />
                     <select
@@ -161,8 +161,8 @@ export default function SignupPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="profession" className="text-text">Profession</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="profession" className="text-text text-xs sm:text-sm">Profession</Label>
                   <div className="relative">
                     <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50 pointer-events-none" size={18} />
                     <select
@@ -181,8 +181,8 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-text">Password</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="password" className="text-text text-sm sm:text-base">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text/50" size={18} />
                   <Input
@@ -204,8 +204,8 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="referral_code" className="text-text">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="referral_code" className="text-text text-xs sm:text-sm">
                   Referral Code <span className="text-text/50">(Optional)</span>
                 </Label>
                 <Input
@@ -219,11 +219,11 @@ export default function SignupPage() {
 
               <Button
                 type="submit"
-                className="w-full btn-neon py-5 sm:py-6 rounded-xl min-h-[44px] text-sm sm:text-base"
+                className="w-full btn-neon py-4 sm:py-5 rounded-xl min-h-[44px] text-sm sm:text-base mt-2"
                 disabled={isLoading}
               >
                 {isLoading ? 'Creating account...' : 'Create Account'}
-                <ArrowRight className="ml-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" size={18} />
+                <ArrowRight className="ml-2 w-4 h-4" size={18} />
               </Button>
             </form>
 

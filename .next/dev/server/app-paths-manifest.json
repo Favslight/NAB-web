@@ -1,11 +1,4 @@
 {
-  "/dashboard/admin/applications/page": "app/dashboard/admin/applications/page.js",
-  "/dashboard/admin/pending-users/page": "app/dashboard/admin/pending-users/page.js",
-  "/dashboard/admin/settings/page": "app/dashboard/admin/settings/page.js",
-  "/dashboard/admin/trainings/page": "app/dashboard/admin/trainings/page.js",
-  "/dashboard/admin/users/page": "app/dashboard/admin/users/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/signup/page": "app/signup/page.js",
   "/signup/waitlist/page": "app/signup/waitlist/page.js"

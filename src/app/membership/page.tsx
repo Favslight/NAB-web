@@ -37,7 +37,7 @@ export default function MembershipPage() {
               Become a NAB Member
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-text px-1">
-              Join Nigeria&apos;s premier AI community for ₦25,000 and unlock
+              Join Nigeria&apos;s premier AI community for ₦30,000 and unlock
               lifetime access to training, community, and opportunities.
             </p>
           </StaggerReveal>
@@ -70,7 +70,7 @@ export default function MembershipPage() {
                   <div className="text-center mb-6 sm:mb-8">
                     <div className="text-xs sm:text-sm text-text mb-2">Membership Fee</div>
                     <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-emerald mb-2">
-                      ₦25,000
+                      ₦30,000
                     </div>
                     <div className="text-text text-sm sm:text-base">
                       One-time payment • Lifetime access
@@ -125,7 +125,7 @@ export default function MembershipPage() {
               },
               {
                 q: "Is the membership fee one-time or recurring?",
-                a: "The ₦25,000 membership fee is a one-time payment that gives you lifetime access to the community and all member benefits.",
+                a: "The ₦30,000 membership fee is a one-time payment that gives you lifetime access to the community and all member benefits.",
               },
               {
                 q: "How do referral rewards work?",

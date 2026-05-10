@@ -51,8 +51,6 @@ export function NeuralNetworkBackground({ className = '' }: NeuralNetworkBackgro
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       const nodes = nodesRef.current;
-      const maxDistance = 150;
-      const maxConnections = 3;
 
       // Update node positions
       nodes.forEach((node) => {
@@ -64,51 +62,7 @@ export function NeuralNetworkBackground({ className = '' }: NeuralNetworkBackgro
         if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
       });
 
-      // Draw connections
-      nodes.forEach((node, i) => {
-        let connections = 0;
-        
-        for (let j = i + 1; j < nodes.length; j++) {
-          if (connections >= maxConnections) break;
-          
-          const other = nodes[j];
-          const dx = node.x - other.x;
-          const dy = node.y - other.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < maxDistance) {
-            const opacity = (1 - distance / maxDistance) * 0.4;
-            
-            // Create gradient for line
-            const gradient = ctx.createLinearGradient(node.x, node.y, other.x, other.y);
-            gradient.addColorStop(0, `rgba(16, 185, 129, ${opacity})`); // emerald
-            gradient.addColorStop(0.5, `rgba(6, 182, 212, ${opacity * 1.5})`); // cyan glow
-            gradient.addColorStop(1, `rgba(16, 185, 129, ${opacity})`); // emerald
-            
-            ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-
-            // Draw data pulse on connection
-            if (Math.random() > 0.995) {
-              const pulseX = node.x + (other.x - node.x) * Math.random();
-              const pulseY = node.y + (other.y - node.y) * Math.random();
-              
-              ctx.beginPath();
-              ctx.arc(pulseX, pulseY, 2, 0, Math.PI * 2);
-              ctx.fillStyle = 'rgba(6, 182, 212, 0.8)';
-              ctx.fill();
-            }
-            
-            connections++;
-          }
-        }
-      });
-
-      // Draw nodes
+      // Draw nodes only (no connections)
       nodes.forEach((node) => {
         // Outer glow
         const glowGradient = ctx.createRadialGradient(
