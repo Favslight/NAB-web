@@ -53,6 +53,7 @@ const superAdminSidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: Users, label: 'Users', href: '/dashboard/admin/users' },
   { icon: Clock, label: 'Pending Users', href: '/dashboard/admin/pending-users' },
+  { icon: CreditCard, label: 'Payments', href: '/dashboard/admin/payments' },
   { icon: CheckCircle, label: 'Applications', href: '/dashboard/admin/applications' },
   { icon: Package, label: 'Products', href: '/dashboard/admin/products' },
   { icon: Layers, label: 'Cohorts', href: '/dashboard/admin/cohorts' },

@@ -53,23 +53,8 @@ export default function MembershipPage() {
     load();
   }, []);
 
-  const handleCompletePayment = async () => {
-    setPaymentLoading(true);
-    try {
-      const res = await membershipApi.initiatePayment({
-        membership_type: 'basic',
-        referral_code: user?.referral_code,
-      });
-      if (res.success && res.data?.authorization_url) {
-        window.location.href = res.data.authorization_url;
-        return;
-      }
-      throw new Error(res.error ?? 'Could not start payment');
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Payment failed');
-    } finally {
-      setPaymentLoading(false);
-    }
+  const handleCompletePayment = () => {
+    window.location.href = '/dashboard/payment';
   };
 
   const memberSince =

@@ -164,10 +164,18 @@ export const membershipApi = {
     referral_code?: string;
   }) =>
     apiClient.post<{
-      authorization_url: string;
       reference: string;
-      access_code: string;
+      amount: number;
+      bank: {
+        accountName: string;
+        accountNumber: string;
+        bankName: string;
+      };
     }>('/api/payments/initiate', data),
+
+  // POST /api/payments/confirm
+  confirmPayment: (data: { invoice_number: string }) =>
+    apiClient.post<null>('/api/payments/confirm', data),
 
   // GET /api/payments/verify/:reference
   verifyPayment: (reference: string) =>
@@ -519,6 +527,13 @@ export const adminApi = {
 
   reviewPendingUser: (id: string, action: 'approve' | 'reject') =>
     apiClient.post<null>(`/api/admin/pending-users/${id}/review`, { action }),
+
+  // Payments (admin view)
+  getPayments: (params?: { status?: string; page?: number; limit?: number }) =>
+    apiClient.get<any>('/api/admin/payments', params),
+
+  reviewPayment: (id: string, data: { action: 'approve' | 'reject'; notes?: string }) =>
+    apiClient.post<null>(`/api/admin/payments/${id}/review`, data),
 };
 
 // Moderation API
