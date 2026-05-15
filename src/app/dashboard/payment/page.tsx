@@ -36,7 +36,7 @@ export default function PaymentScreen() {
     setLoading(true);
     try {
       const res = await membershipApi.initiatePayment({
-        membership_type: 'basic',
+        membership_type: 'standard_member',
         referral_code: user?.referral_code,
       });
       if (res.success && res.data) {

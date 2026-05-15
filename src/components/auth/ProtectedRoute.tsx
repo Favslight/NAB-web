@@ -4,19 +4,27 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requireSuperAdmin?: boolean;
+}
+
 export default function ProtectedRoute({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { isAuthenticated, isLoading } = useAuth();
+  requireSuperAdmin = false,
+}: ProtectedRouteProps): any {
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        router.push('/login');
+      } else if (requireSuperAdmin && user?.role !== 'super_admin') {
+        router.push('/dashboard');
+      }
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, user, router, requireSuperAdmin]);
 
   if (isLoading) {
     return (
@@ -29,7 +37,7 @@ export default function ProtectedRoute({
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || (requireSuperAdmin && user?.role !== 'super_admin')) {
     return null;
   }
 

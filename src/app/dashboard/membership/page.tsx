@@ -58,11 +58,12 @@ export default function MembershipPage() {
   };
 
   const memberSince =
-    (user as any)?.membership?.starts_at &&
-    new Date((user as any).membership.starts_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    user?.created_at &&
+    new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  
   const expiresAt =
-    (user as any)?.membership?.expires_at &&
-    new Date((user as any).membership.expires_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    user?.membership_expires_at &&
+    new Date(user.membership_expires_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
   return (
     <ProtectedRoute>
@@ -108,7 +109,7 @@ export default function MembershipPage() {
                   </div>
                   <div className="glass rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-gold">
-                      ₦{((user as any)?.membership?.amount_paid ?? 0).toLocaleString()}
+                      ₦{(user?.membership?.amount_paid || 5000).toLocaleString()}
                     </div>
                     <div className="text-sm text-text">Amount Paid</div>
                   </div>

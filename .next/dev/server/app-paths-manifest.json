@@ -1,5 +1,12 @@
 {
-  "/page": "app/page.js",
-  "/signup/page": "app/signup/page.js",
-  "/signup/waitlist/page": "app/signup/waitlist/page.js"
+  "/dashboard/admin/settings/page": "app/dashboard/admin/settings/page.js",
+  "/dashboard/community/page": "app/dashboard/community/page.js",
+  "/dashboard/membership/page": "app/dashboard/membership/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/payment/page": "app/dashboard/payment/page.js",
+  "/dashboard/profile/page": "app/dashboard/profile/page.js",
+  "/dashboard/state-hub/page": "app/dashboard/state-hub/page.js",
+  "/dashboard/tools/page": "app/dashboard/tools/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
 }

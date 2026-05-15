@@ -24,6 +24,8 @@ import {
   FileText,
   Layers,
   Clock,
+  Rocket,
+  LayoutGridIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -32,12 +34,14 @@ import { useAuth } from '@/context/AuthContext';
 import GuestBanner from '@/components/auth/GuestBanner';
 import { getInitials } from '@/lib/utils';
 import Logo from '@/components/logo.png';
+import { BlockList } from 'net';
 
 // Regular user sidebar items
 const userSidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: User, label: 'Profile', href: '/dashboard/profile' },
   { icon: CreditCard, label: 'Membership', href: '/dashboard/membership' },
+  { icon: Rocket, label: 'AI Launchpad', href: '/dashboard/tools' },
   { icon: BookOpen, label: 'Learning Center', href: '/dashboard/learning' },
   { icon: MessageSquare, label: 'Community', href: '/dashboard/community' },
   { icon: MapPin, label: 'State Hub', href: '/dashboard/state-hub' },
@@ -54,6 +58,8 @@ const superAdminSidebarItems = [
   { icon: Users, label: 'Users', href: '/dashboard/admin/users' },
   { icon: Clock, label: 'Pending Users', href: '/dashboard/admin/pending-users' },
   { icon: CreditCard, label: 'Payments', href: '/dashboard/admin/payments' },
+  { icon: Rocket, label: 'AI Launchpad', href: '/dashboard/tools' },
+  { icon: LayoutGridIcon, label: 'Manage Tools', href: '/dashboard/admin/tools' },
   { icon: CheckCircle, label: 'Applications', href: '/dashboard/admin/applications' },
   { icon: Package, label: 'Products', href: '/dashboard/admin/products' },
   { icon: Layers, label: 'Cohorts', href: '/dashboard/admin/cohorts' },
@@ -66,6 +72,7 @@ const superAdminSidebarItems = [
 const stateAdminSidebarItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: User, label: 'Profile', href: '/dashboard/profile' },
+  { icon: Rocket, label: 'AI Launchpad', href: '/dashboard/tools' },
   { icon: BookOpen, label: 'Learning Center', href: '/dashboard/learning' },
   { icon: MessageSquare, label: 'Community', href: '/dashboard/community' },
   { icon: MapPin, label: 'State Hub', href: '/dashboard/state-hub' },

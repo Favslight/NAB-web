@@ -49,7 +49,8 @@ class ApiClient {
           } else {
             // Regular unauthorized - clear token and redirect to login
             Cookies.remove('auth_token');
-            if (typeof window !== 'undefined') {
+            const isLoginRequest = error.config?.url?.includes('/api/auth/login');
+            if (typeof window !== 'undefined' && !isLoginRequest) {
               window.location.href = '/login';
             }
           }
@@ -160,7 +161,7 @@ export const authApi = {
 export const membershipApi = {
   // POST /api/payments/initiate
   initiatePayment: (data: {
-    membership_type: 'basic' | 'premium' | 'lifetime';
+    membership_type: 'standard_member' | 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
     referral_code?: string;
   }) =>
     apiClient.post<{
@@ -480,6 +481,18 @@ export const adminApi = {
   updateUserRole: (id: string, role: 'guest' | 'member' | 'premium_builder' | 'state_admin') =>
     apiClient.put(`/api/admin/users/${id}/role`, { role }),
 
+  // Assign state admin (swaps if necessary)
+  assignStateAdmin: (id: string) =>
+    apiClient.post(`/api/admin/users/${id}/assign-state-admin`),
+
+  // Remove state admin
+  removeStateAdmin: (id: string) =>
+    apiClient.post(`/api/admin/users/${id}/remove-state-admin`),
+
+  // List all state admins
+  getStateAdmins: () =>
+    apiClient.get<any[]>('/api/admin/state-admins'),
+
   // Update user status (state admin)
   updateUserStatus: (
     id: string,
@@ -535,6 +548,75 @@ export const adminApi = {
   reviewPayment: (id: string, data: { action: 'approve' | 'reject'; notes?: string }) =>
     apiClient.post<null>(`/api/admin/payments/${id}/review`, data),
 };
+
+// Tools / AI Launchpad API
+export const toolsApi = {
+  // ── User-facing ─────────────────────────────────────────────────────────
+
+  // GET /api/tools — all tools, locked flag computed by backend per user's plan
+  getTools: () =>
+    apiClient.get<import('@/types').AiTool[]>('/api/tools'),
+
+  // GET /api/tools/categories — list of category strings
+  getCategories: () =>
+    apiClient.get<string[]>('/api/tools/categories'),
+
+  // GET /api/tools/my-access — only tools the current user can launch
+  getMyToolAccess: () =>
+    apiClient.get<import('@/types').AiTool[]>('/api/tools/my-access'),
+
+  // POST /api/tools/:slug/launch — returns { launchUrl, tool: { name, slug } }
+  launchTool: (slug: string) =>
+    apiClient.post<{ launchUrl: string; tool: { name: string; slug: string } }>(
+      `/api/tools/${slug}/launch`
+    ),
+
+  // ── Super-admin ──────────────────────────────────────────────────────────
+  admin: {
+    // GET /api/tools/analytics
+    getAnalytics: () =>
+      apiClient.get<any>('/api/tools/analytics'),
+
+    // GET /api/tools/admin/tools (paginated, includes inactive)
+    getTools: (params?: { page?: number; limit?: number }) =>
+      apiClient.get<any>('/api/tools/admin/tools', params),
+
+    // POST /api/tools/admin/tools
+    createTool: (data: {
+      name: string;
+      slug: string;
+      description?: string;
+      icon?: string;
+      category?: string;
+      required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+      featured?: boolean;
+      active?: boolean;
+    }) => apiClient.post<any>('/api/tools/admin/tools', data),
+
+    // PATCH /api/tools/admin/tools/:id
+    updateTool: (
+      id: string,
+      data: {
+        name?: string;
+        description?: string;
+        icon?: string;
+        category?: string;
+        required_plan?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+        featured?: boolean;
+        active?: boolean;
+      }
+    ) => apiClient.patch<any>(`/api/tools/admin/tools/${id}`, data),
+
+    // DELETE /api/tools/admin/tools/:id
+    deleteTool: (id: string) =>
+      apiClient.delete<null>(`/api/tools/admin/tools/${id}`),
+
+    // GET /api/tools/admin/deal-ai-users (paginated)
+    getDealAiUsers: (params?: { page?: number; limit?: number }) =>
+      apiClient.get<any>('/api/tools/admin/deal-ai-users', params),
+  },
+};
+
 
 // Moderation API
 export const moderationApi = {

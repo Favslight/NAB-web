@@ -72,7 +72,14 @@ export default function ProfilePage() {
                     <div className="text-lg font-semibold text-white">
                       {user?.full_name || 'Loading...'}
                     </div>
-                    <div className="text-text">{user?.id_no || ''}</div>
+                    <div className="text-text flex items-center gap-2">
+                      {user?.id_no || ''}
+                      {user?.membership_status === 'active' && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald/20 text-emerald uppercase tracking-wider">
+                          Active Member
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
