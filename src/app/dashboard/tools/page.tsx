@@ -23,25 +23,27 @@ const PLAN_META: Record<PlanTier, { label: string; icon: typeof Star; color: str
   ai_product_founder:  { label: 'AI Product Founder',   icon: Crown, color: 'text-gold' },
 };
 
-function applyBackendAccess(allTools: AiTool[], accessibleTools: AiTool[]): AiTool[] {
-  const accessibleBySlug = new Map(accessibleTools.map((tool) => [tool.slug, tool]));
+const PLAN_ACCESS: Record<PlanTier, PlanTier[]> = {
+  ai_explorer: ['ai_explorer'],
+  ai_builder: ['ai_explorer', 'ai_builder'],
+  ai_product_founder: ['ai_explorer', 'ai_builder', 'ai_product_founder'],
+};
 
-  return allTools.map((tool) => {
-    const accessibleTool = accessibleBySlug.get(tool.slug);
+function getRequiredPlan(tool: AiTool): PlanTier {
+  return (tool.requiredPlan ?? tool.required_plan ?? 'ai_product_founder') as PlanTier;
+}
 
-    if (!accessibleTool) {
-      return {
-        ...tool,
-        locked: true,
-        launchable: false,
-      };
-    }
+function applyPlanLocks(tools: AiTool[], userPlan: PlanTier): AiTool[] {
+  const unlockedPlans = PLAN_ACCESS[userPlan] ?? PLAN_ACCESS.ai_explorer;
+
+  return tools.map((tool) => {
+    const requiredPlan = getRequiredPlan(tool);
+    const isUnlocked = unlockedPlans.includes(requiredPlan);
 
     return {
       ...tool,
-      ...accessibleTool,
-      locked: false,
-      launchable: accessibleTool.launchable ?? true,
+      locked: !isUnlocked,
+      launchable: Boolean(tool.launchable && isUnlocked),
     };
   });
 }
@@ -66,16 +68,7 @@ export default function ToolsPage() {
       try {
         const toolsResponse = await toolsApi.getTools();
         if (toolsResponse.success && toolsResponse.data) {
-          try {
-            const accessResponse = await toolsApi.getMyToolAccess();
-            setTools(
-              accessResponse.success && accessResponse.data
-                ? applyBackendAccess(toolsResponse.data, accessResponse.data)
-                : toolsResponse.data
-            );
-          } catch {
-            setTools(toolsResponse.data);
-          }
+          setTools(applyPlanLocks(toolsResponse.data, userPlan));
         } else {
           setTools([]);
         }
