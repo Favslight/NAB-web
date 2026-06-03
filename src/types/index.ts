@@ -9,14 +9,14 @@ export interface User {
   avatar_url?: string;
   is_member: boolean;
   membership_status: 'inactive' | 'pending' | 'active' | 'expired';
-  membership_plan_type?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+  membership_plan_type?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
   membership_expires_at?: string;
   referral_code: string;
   referred_by?: string;
   role: 'guest' | 'member' | 'premium_builder' | 'state_admin' | 'super_admin';
   membership?: {
     id: string;
-    plan_type: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+    plan_type: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
     status: 'pending' | 'active' | 'expired' | 'cancelled';
     amount_paid?: number;
     starts_at?: string;
@@ -234,7 +234,7 @@ export interface AiTool {
   icon: string;
   category: string;
   /** snake_case from backend DB */
-  required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+  required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
   locked: boolean;
   launchable: boolean;
   featured?: boolean;
@@ -244,5 +244,4 @@ export interface AiTool {
 /** Returned by GET /api/tools/my-access — accessible tools only */
 export type ToolAccessList = AiTool[];
 
-export type PlanTier = 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
-
+export type PlanTier = 'ai_explorer' | 'ai_builder' | 'ai_product_founder';

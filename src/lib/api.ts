@@ -161,7 +161,7 @@ export const authApi = {
 export const membershipApi = {
   // POST /api/payments/initiate
   initiatePayment: (data: {
-    membership_type: 'standard_member' | 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
+    membership_type: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
     referral_code?: string;
   }) =>
     apiClient.post<{
@@ -588,7 +588,7 @@ export const toolsApi = {
       description?: string;
       icon?: string;
       category?: string;
-      required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+      required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
       featured?: boolean;
       active?: boolean;
     }) => apiClient.post<any>('/api/tools/admin/tools', data),
@@ -601,7 +601,7 @@ export const toolsApi = {
         description?: string;
         icon?: string;
         category?: string;
-        required_plan?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder' | 'standard_member';
+        required_plan?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
         featured?: boolean;
         active?: boolean;
       }

@@ -48,14 +48,12 @@ const PLAN_GLOW: Record<PlanTier, string> = {
   ai_explorer: 'group-hover:shadow-[0_0_28px_rgba(0,209,255,0.18)] group-hover:border-cyan/30',
   ai_builder:  'group-hover:shadow-[0_0_28px_rgba(29,184,122,0.18)] group-hover:border-emerald/30',
   ai_product_founder:  'group-hover:shadow-[0_0_28px_rgba(251,191,36,0.18)] group-hover:border-gold/30',
-  standard_member: 'group-hover:shadow-[0_0_28px_rgba(59,130,246,0.18)] group-hover:border-blue/30',
 };
 
 const PLAN_ICON_BG: Record<PlanTier, string> = {
   ai_explorer: 'bg-cyan/10 border-cyan/20 text-cyan',
   ai_builder:  'bg-emerald/10 border-emerald/20 text-emerald',
   ai_product_founder:  'bg-gold/10 border-gold/20 text-gold',
-  standard_member: 'bg-blue/10 border-blue/20 text-blue',
 };
 
 const CATEGORY_COLOR: Record<string, string> = {
@@ -92,7 +90,6 @@ export default function ToolCard({ tool, index, onUpgrade }: ToolCardProps) {
       <div className={`absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500
         ${plan === 'ai_explorer' ? 'bg-gradient-to-r from-transparent via-cyan/60 to-transparent' :
           plan === 'ai_builder'  ? 'bg-gradient-to-r from-transparent via-emerald/60 to-transparent' :
-          plan === 'standard_member' ? 'bg-gradient-to-r from-transparent via-blue/60 to-transparent' :
                                 'bg-gradient-to-r from-transparent via-gold/60 to-transparent'}`}
       />
 

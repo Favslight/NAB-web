@@ -218,7 +218,6 @@ export default function AdminToolsPage() {
                       value={currentTool?.required_plan || 'ai_explorer'}
                       onChange={(e) => setCurrentTool({...currentTool, required_plan: e.target.value as any})}
                     >
-                      <option value="standard_member">Standard Member</option>
                       <option value="ai_explorer">AI Explorer</option>
                       <option value="ai_builder">AI Builder</option>
                       <option value="ai_product_founder">AI Product Founder</option>

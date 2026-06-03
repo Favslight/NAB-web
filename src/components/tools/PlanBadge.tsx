@@ -4,12 +4,6 @@ import { cn } from '@/lib/utils';
 import { PlanTier } from '@/types';
 
 const PLAN_CONFIG: Record<PlanTier, { label: string; color: string; glow: string; dot: string }> = {
-  standard_member: {
-    label: 'Standard Member',
-    color: 'border-blue/40 text-blue bg-blue/10',
-    glow: 'shadow-[0_0_12px_rgba(59,130,246,0.2)]',
-    dot: 'bg-blue',
-  },
   ai_explorer: {
     label: 'AI Explorer',
     color: 'border-cyan/40 text-cyan bg-cyan/10',

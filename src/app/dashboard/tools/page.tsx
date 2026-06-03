@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 import { toolsApi } from '@/lib/api';
+import { applyToolAccess, resolveToolPlan } from '@/lib/toolAccess';
 import { AiTool, PlanTier, User } from '@/types';
 import ToolGrid from '@/components/tools/ToolGrid';
 import ToolFilters, { FilterState, ToolCategory } from '@/components/tools/ToolFilters';
@@ -20,21 +21,13 @@ import toast from 'react-hot-toast';
 // ── Static tool catalog (fallback + UI seeding) ─────────────────────────────
 // Resolve plan from user membership
 function resolvePlan(user: User | null): PlanTier | null {
-  if (!user) return null;
-  
-  // If user has an active membership, use that plan
-  if (user.membership_status === 'active') {
-    return (user.membership_plan_type || user.membership?.plan_type || 'ai_builder') as PlanTier;
-  }
-  
-  return 'ai_explorer';
+  return resolveToolPlan(user);
 }
 
 const PLAN_META: Record<PlanTier, { label: string; icon: typeof Star; color: string }> = {
   ai_explorer: { label: 'AI Explorer',          icon: Star,  color: 'text-cyan' },
   ai_builder:  { label: 'AI Builder',           icon: Zap,   color: 'text-emerald' },
   ai_product_founder:  { label: 'AI Product Founder',   icon: Crown, color: 'text-gold' },
-  standard_member: { label: 'Standard Member', icon: Star, color: 'text-blue' },
 };
 
 // ── Main Page ───────────────────────────────────────────────────────────────
@@ -49,6 +42,10 @@ export default function ToolsPage() {
   });
 
   const userPlan = resolvePlan(user);
+  const gatedTools = useMemo(
+    () => tools.map((tool) => applyToolAccess(tool, userPlan)),
+    [tools, userPlan]
+  );
 
   // ── Load tools ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -72,7 +69,7 @@ export default function ToolsPage() {
 
   // ── Filtering ────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
-    return tools.filter((t) => {
+    return gatedTools.filter((t) => {
       if (filters.search && !t.name.toLowerCase().includes(filters.search.toLowerCase()) &&
           !t.description?.toLowerCase().includes(filters.search.toLowerCase())) return false;
       if (filters.category !== 'All' && t.category !== filters.category) return false;
@@ -80,9 +77,9 @@ export default function ToolsPage() {
       if (filters.featuredOnly && !t.featured) return false;
       return true;
     });
-  }, [tools, filters]);
+  }, [gatedTools, filters]);
 
-  const accessibleCount = tools.filter((t) => !t.locked).length;
+  const accessibleCount = gatedTools.filter((t) => !t.locked).length;
   const planMeta = userPlan ? PLAN_META[userPlan] : null;
 
   const handleUpgrade = (plan: PlanTier) => {
@@ -154,14 +151,14 @@ export default function ToolsPage() {
                   <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Unlocked</div>
                   <div className="flex items-end gap-1">
                     <span className="text-3xl font-bold font-display text-emerald leading-none">{loading ? '—' : accessibleCount}</span>
-                    <span className="text-sm text-muted-foreground mb-0.5">/ {tools.length}</span>
+                    <span className="text-sm text-muted-foreground mb-0.5">/ {gatedTools.length}</span>
                   </div>
                 </div>
 
                 <div className="rounded-xl border border-border bg-background/60 p-4">
                   <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Locked</div>
                   <div className="flex items-end gap-1">
-                    <span className="text-3xl font-bold font-display text-muted-foreground leading-none">{loading ? '—' : tools.length - accessibleCount}</span>
+                    <span className="text-3xl font-bold font-display text-muted-foreground leading-none">{loading ? '—' : gatedTools.length - accessibleCount}</span>
                     <Lock className="w-4 h-4 text-muted-foreground mb-0.5" />
                   </div>
                 </div>
@@ -191,7 +188,7 @@ export default function ToolsPage() {
             <ToolFilters
               filters={filters}
               onChange={setFilters}
-              totalCount={tools.length}
+              totalCount={gatedTools.length}
               filteredCount={filtered.length}
             />
           </motion.section>
