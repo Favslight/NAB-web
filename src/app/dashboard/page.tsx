@@ -54,6 +54,12 @@ interface AdminDashboardData {
   stateId: string;
 }
 
+const PLAN_LABELS: Record<string, string> = {
+  ai_explorer: 'AI Explorer',
+  ai_builder: 'AI Builder',
+  ai_product_founder: 'AI Product Founder',
+};
+
 export default function DashboardPage() {
   const { user } = useAuth();
 
@@ -138,6 +144,8 @@ export default function DashboardPage() {
       : user?.membership_status === 'pending'
       ? 'Pending Activation'
       : 'Membership Inactive';
+  const currentPlan = user?.membership_plan_type || 'ai_explorer';
+  const currentPlanLabel = PLAN_LABELS[currentPlan] || PLAN_LABELS.ai_explorer;
 
   const primaryTraining = useMemo(() => trainings?.[0], [trainings]);
   const secondaryTraining = useMemo(() => trainings?.[1], [trainings]);
@@ -145,8 +153,8 @@ export default function DashboardPage() {
   const stats = useMemo(
     () => [
       {
-        label: 'Membership Status',
-        value: user?.membership_status ?? 'Inactive',
+        label: 'Current Plan',
+        value: currentPlanLabel,
         icon: CreditCard,
         color: 'text-emerald',
       },

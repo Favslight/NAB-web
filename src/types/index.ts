@@ -233,8 +233,10 @@ export interface AiTool {
   description: string;
   icon: string;
   category: string;
-  /** snake_case from backend DB */
+  /** snake_case from admin endpoints */
   required_plan: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
+  /** camelCase from user-facing tool list */
+  requiredPlan?: 'ai_explorer' | 'ai_builder' | 'ai_product_founder';
   locked: boolean;
   launchable: boolean;
   featured?: boolean;

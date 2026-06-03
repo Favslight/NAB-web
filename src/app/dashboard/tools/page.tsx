@@ -10,19 +10,12 @@ import { Button } from '@/components/ui/button';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 import { toolsApi } from '@/lib/api';
-import { applyToolAccess, resolveToolPlan } from '@/lib/toolAccess';
-import { AiTool, PlanTier, User } from '@/types';
+import { AiTool, PlanTier } from '@/types';
 import ToolGrid from '@/components/tools/ToolGrid';
 import ToolFilters, { FilterState, ToolCategory } from '@/components/tools/ToolFilters';
 import PlanBadge from '@/components/tools/PlanBadge';
 import UpgradeModal from '@/components/tools/UpgradeModal';
 import toast from 'react-hot-toast';
-
-// ── Static tool catalog (fallback + UI seeding) ─────────────────────────────
-// Resolve plan from user membership
-function resolvePlan(user: User | null): PlanTier | null {
-  return resolveToolPlan(user);
-}
 
 const PLAN_META: Record<PlanTier, { label: string; icon: typeof Star; color: string }> = {
   ai_explorer: { label: 'AI Explorer',          icon: Star,  color: 'text-cyan' },
@@ -41,11 +34,7 @@ export default function ToolsPage() {
     search: '', category: 'All', accessibleOnly: false, featuredOnly: false,
   });
 
-  const userPlan = resolvePlan(user);
-  const gatedTools = useMemo(
-    () => tools.map((tool) => applyToolAccess(tool, userPlan)),
-    [tools, userPlan]
-  );
+  const userPlan = user?.membership_plan_type ?? 'ai_explorer';
 
   // ── Load tools ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -69,7 +58,7 @@ export default function ToolsPage() {
 
   // ── Filtering ────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
-    return gatedTools.filter((t) => {
+    return tools.filter((t) => {
       if (filters.search && !t.name.toLowerCase().includes(filters.search.toLowerCase()) &&
           !t.description?.toLowerCase().includes(filters.search.toLowerCase())) return false;
       if (filters.category !== 'All' && t.category !== filters.category) return false;
@@ -77,10 +66,10 @@ export default function ToolsPage() {
       if (filters.featuredOnly && !t.featured) return false;
       return true;
     });
-  }, [gatedTools, filters]);
+  }, [tools, filters]);
 
-  const accessibleCount = gatedTools.filter((t) => !t.locked).length;
-  const planMeta = userPlan ? PLAN_META[userPlan] : null;
+  const accessibleCount = tools.filter((t) => !t.locked).length;
+  const planMeta = PLAN_META[userPlan];
 
   const handleUpgrade = (plan: PlanTier) => {
     setUpgradePlan(plan);
@@ -137,28 +126,24 @@ export default function ToolsPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 lg:min-w-[380px]">
                 <div className="col-span-2 sm:col-span-1 lg:col-span-2 xl:col-span-1 rounded-xl border border-border bg-background/60 p-4">
                   <div className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-medium">Your Plan</div>
-                  {planMeta ? (
-                    <div className="flex items-center gap-2">
-                      <planMeta.icon className={`w-5 h-5 ${planMeta.color}`} />
-                      <PlanBadge plan={userPlan!} size="md" showDot={false} />
-                    </div>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">No active plan</span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <planMeta.icon className={`w-5 h-5 ${planMeta.color}`} />
+                    <PlanBadge plan={userPlan} size="md" showDot={false} />
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-emerald/20 bg-emerald/5 p-4">
                   <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Unlocked</div>
                   <div className="flex items-end gap-1">
                     <span className="text-3xl font-bold font-display text-emerald leading-none">{loading ? '—' : accessibleCount}</span>
-                    <span className="text-sm text-muted-foreground mb-0.5">/ {gatedTools.length}</span>
+                    <span className="text-sm text-muted-foreground mb-0.5">/ {tools.length}</span>
                   </div>
                 </div>
 
                 <div className="rounded-xl border border-border bg-background/60 p-4">
                   <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Locked</div>
                   <div className="flex items-end gap-1">
-                    <span className="text-3xl font-bold font-display text-muted-foreground leading-none">{loading ? '—' : gatedTools.length - accessibleCount}</span>
+                    <span className="text-3xl font-bold font-display text-muted-foreground leading-none">{loading ? '—' : tools.length - accessibleCount}</span>
                     <Lock className="w-4 h-4 text-muted-foreground mb-0.5" />
                   </div>
                 </div>
@@ -188,7 +173,7 @@ export default function ToolsPage() {
             <ToolFilters
               filters={filters}
               onChange={setFilters}
-              totalCount={gatedTools.length}
+              totalCount={tools.length}
               filteredCount={filtered.length}
             />
           </motion.section>

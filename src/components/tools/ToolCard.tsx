@@ -73,7 +73,7 @@ interface ToolCardProps {
 
 export default function ToolCard({ tool, index, onUpgrade }: ToolCardProps) {
   const Icon = ICON_MAP[tool.slug] ?? LayoutGrid;
-  const plan = tool.required_plan as PlanTier;
+  const plan = (tool.requiredPlan ?? tool.required_plan ?? 'ai_product_founder') as PlanTier;
   const planGlow = PLAN_GLOW[plan] ?? PLAN_GLOW.ai_product_founder;
   const iconBg   = PLAN_ICON_BG[plan] ?? PLAN_ICON_BG.ai_product_founder;
   const catColor = CATEGORY_COLOR[tool.category] ?? 'text-muted-foreground';
