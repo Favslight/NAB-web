@@ -1,4 +1,8 @@
+'use client';
+
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Sparkles,
@@ -18,6 +22,17 @@ import { StaggerReveal } from "@/components/ui/stagger-reveal";
 import { JoinButton } from "@/components/join-button";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const referralCode = params.get('ref');
+
+    if (referralCode) {
+      router.replace(`/signup?ref=${encodeURIComponent(referralCode)}`);
+    }
+  }, [router]);
+
   return (
     <main className="min-h-screen w-full max-w-full bg-background overflow-x-hidden relative">
       <Navbar />

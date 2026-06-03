@@ -42,13 +42,33 @@ type LeaderEntry = {
   total_rewards?: number;
 };
 
+function normalizeReferralLink(referralLink: string | undefined, referralCode: string): string {
+  if (!referralLink) return '';
+
+  try {
+    const url = new URL(referralLink);
+    const code = url.searchParams.get('ref') || referralCode;
+
+    url.pathname = '/signup';
+    url.search = '';
+    if (code && code !== '—') url.searchParams.set('ref', code);
+    url.hash = '';
+
+    return url.toString();
+  } catch {
+    return referralCode && referralCode !== '—'
+      ? `/signup?ref=${encodeURIComponent(referralCode)}`
+      : referralLink;
+  }
+}
+
 export default function ReferralsPage() {
   const { user } = useAuth();
   const [referralData, setReferralData] = useState<ReferralMe | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
 
   const referralCode = referralData?.referral_code ?? user?.referral_code ?? '—';
-  const referralLink = referralData?.referral_link ?? '';
+  const referralLink = normalizeReferralLink(referralData?.referral_link, referralCode);
 
   useEffect(() => {
     const load = async () => {
