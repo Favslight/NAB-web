@@ -23,6 +23,29 @@ const PLAN_META: Record<PlanTier, { label: string; icon: typeof Star; color: str
   ai_product_founder:  { label: 'AI Product Founder',   icon: Crown, color: 'text-gold' },
 };
 
+function applyBackendAccess(allTools: AiTool[], accessibleTools: AiTool[]): AiTool[] {
+  const accessibleBySlug = new Map(accessibleTools.map((tool) => [tool.slug, tool]));
+
+  return allTools.map((tool) => {
+    const accessibleTool = accessibleBySlug.get(tool.slug);
+
+    if (!accessibleTool) {
+      return {
+        ...tool,
+        locked: true,
+        launchable: false,
+      };
+    }
+
+    return {
+      ...tool,
+      ...accessibleTool,
+      locked: false,
+      launchable: accessibleTool.launchable ?? true,
+    };
+  });
+}
+
 // ── Main Page ───────────────────────────────────────────────────────────────
 export default function ToolsPage() {
   const { user } = useAuth();
@@ -41,9 +64,18 @@ export default function ToolsPage() {
     const load = async () => {
       setLoading(true);
       try {
-        const response = await toolsApi.getTools();
-        if (response.success && response.data) {
-          setTools(response.data);
+        const toolsResponse = await toolsApi.getTools();
+        if (toolsResponse.success && toolsResponse.data) {
+          try {
+            const accessResponse = await toolsApi.getMyToolAccess();
+            setTools(
+              accessResponse.success && accessResponse.data
+                ? applyBackendAccess(toolsResponse.data, accessResponse.data)
+                : toolsResponse.data
+            );
+          } catch {
+            setTools(toolsResponse.data);
+          }
         } else {
           setTools([]);
         }

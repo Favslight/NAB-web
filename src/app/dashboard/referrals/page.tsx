@@ -41,9 +41,7 @@ export default function ReferralsPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
 
   const referralCode = referralData?.referral_code ?? user?.referral_code ?? '—';
-  const referralLink =
-    referralData?.referral_link ??
-    (typeof window !== 'undefined' ? `${window.location.origin}/signup?ref=${referralCode}` : '');
+  const referralLink = referralData?.referral_link ?? '';
 
   useEffect(() => {
     const load = async () => {
