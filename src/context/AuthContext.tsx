@@ -52,8 +52,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authApi.me();
       if (response.success && response.data) {
+        let refreshedUser = response.data;
+
+        try {
+          const profileResponse = await userApi.getProfile();
+          if (profileResponse.success && profileResponse.data) {
+            const profilePayload = profileResponse.data as any;
+            const profileData =
+              profilePayload.user ??
+              profilePayload.profile?.user ??
+              profilePayload.profile ??
+              profilePayload;
+            refreshedUser = { ...refreshedUser, ...profileData };
+
+            if (!refreshedUser.membership && profilePayload.membership) {
+              refreshedUser.membership = profilePayload.membership;
+            }
+
+            if (
+              refreshedUser.membership?.plan_type &&
+              (!refreshedUser.membership_plan_type ||
+                (refreshedUser.membership_status === 'active' &&
+                  refreshedUser.membership_plan_type === 'ai_explorer'))
+            ) {
+              refreshedUser.membership_plan_type = refreshedUser.membership.plan_type;
+            }
+          }
+        } catch {
+          // Keep /auth/me data if the richer profile endpoint is unavailable.
+        }
+
         setState({
-          user: response.data,
+          user: refreshedUser,
           isAuthenticated: true,
           isLoading: false,
           isGuest: false,

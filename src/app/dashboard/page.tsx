@@ -149,7 +149,7 @@ export default function DashboardPage() {
       : user?.membership_status === 'pending'
       ? 'Pending Activation'
       : 'Membership Inactive';
-  const currentPlan = user?.membership_plan_type || 'ai_explorer';
+  const currentPlan = user?.membership?.plan_type || user?.membership_plan_type || 'ai_explorer';
   const currentPlanLabel = PLAN_LABELS[currentPlan] || PLAN_LABELS.ai_explorer;
 
   const primaryTraining = useMemo(() => trainings?.[0], [trainings]);

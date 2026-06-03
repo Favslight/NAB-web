@@ -22,13 +22,23 @@ const benefits = [
   'Mentorship matching',
 ];
 
+const MEMBERSHIP_FEE_BY_PLAN: Record<string, number> = {
+  ai_explorer: 0,
+  ai_builder: 30000,
+  ai_product_founder: 250000,
+};
+
 type TransactionItem = {
   id?: string;
   reference?: string;
   amount?: number;
+  type?: string;
+  membership_type?: string;
+  plan_type?: string;
   status?: string;
   created_at?: string;
   transaction_type?: string;
+  metadata?: Record<string, unknown>;
 };
 
 export default function MembershipPage() {
@@ -64,6 +74,43 @@ export default function MembershipPage() {
   const expiresAt =
     user?.membership_expires_at &&
     new Date(user.membership_expires_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  const rawMembershipPlan = user?.membership?.plan_type ?? user?.membership_plan_type ?? 'ai_builder';
+  const membershipPlan = isActive && rawMembershipPlan === 'ai_explorer' ? 'ai_builder' : rawMembershipPlan;
+  const latestPaymentAmount = history.reduce<number | undefined>(
+    (highest, tx) =>
+      typeof tx.amount === 'number' && tx.amount > (highest ?? 0) ? tx.amount : highest,
+    undefined
+  );
+  const isMembershipTransaction = (tx: TransactionItem) => {
+    const kind = `${tx.type ?? tx.transaction_type ?? ''}`.toLowerCase();
+    return !kind || kind.includes('membership') || kind === 'payment';
+  };
+  const getTransactionPlan = (tx: TransactionItem) => {
+    const metadataPlan =
+      typeof tx.metadata?.membership_type === 'string'
+        ? tx.metadata.membership_type
+        : typeof tx.metadata?.plan_type === 'string'
+        ? tx.metadata.plan_type
+        : undefined;
+
+    return tx.membership_type ?? tx.plan_type ?? metadataPlan ?? (isMembershipTransaction(tx) ? membershipPlan : undefined);
+  };
+  const getPlanFee = (plan?: string) =>
+    MEMBERSHIP_FEE_BY_PLAN[plan ?? ''] ?? MEMBERSHIP_FEE_BY_PLAN.ai_builder;
+  const planMembershipFee = getPlanFee(membershipPlan);
+  const membershipAmount =
+    planMembershipFee > 0
+      ? planMembershipFee
+      : latestPaymentAmount ?? user?.membership?.amount_paid ?? MEMBERSHIP_FEE_BY_PLAN.ai_builder;
+  const getTransactionAmount = (tx: TransactionItem) => {
+    const transactionPlanFee = getPlanFee(getTransactionPlan(tx));
+
+    if (isMembershipTransaction(tx) && transactionPlanFee > 0) {
+      return transactionPlanFee;
+    }
+
+    return tx.amount ?? 0;
+  };
 
   return (
     <ProtectedRoute>
@@ -109,7 +156,7 @@ export default function MembershipPage() {
                   </div>
                   <div className="glass rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-gold">
-                      ₦{(user?.membership?.amount_paid || 5000).toLocaleString()}
+                      ₦{membershipAmount.toLocaleString()}
                     </div>
                     <div className="text-sm text-text">Amount Paid</div>
                   </div>
@@ -167,8 +214,11 @@ export default function MembershipPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {history.map((tx, i) => (
-                    <div key={tx.id ?? i} className="p-3 glass rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  {history.map((rawTx, i) => {
+                    const tx = { ...rawTx, amount: getTransactionAmount(rawTx) };
+
+                    return (
+                      <div key={tx.id ?? i} className="p-3 glass rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="min-w-0">
                         <div className="font-medium text-white">
                           {tx.transaction_type ?? 'Payment'}
@@ -191,8 +241,9 @@ export default function MembershipPage() {
                           {tx.status ?? '—'}
                         </Badge>
                       </div>
-                    </div>
-                  ))}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

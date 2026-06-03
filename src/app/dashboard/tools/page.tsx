@@ -59,7 +59,7 @@ export default function ToolsPage() {
     search: '', category: 'All', accessibleOnly: false, featuredOnly: false,
   });
 
-  const userPlan = user?.membership_plan_type ?? 'ai_explorer';
+  const userPlan = user?.membership?.plan_type ?? user?.membership_plan_type ?? 'ai_explorer';
 
   // ── Load tools ──────────────────────────────────────────────────────────
   useEffect(() => {

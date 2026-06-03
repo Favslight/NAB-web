@@ -29,7 +29,7 @@ export default function PaymentScreen() {
   const [loading, setLoading] = useState(false);
   const [copiedInvoice, setCopiedInvoice] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
-  const { user } = useAuth();
+  const { user, refreshUser, updateUser } = useAuth();
   const router = useRouter();
 
   const initiatePayment = async () => {
@@ -63,6 +63,12 @@ export default function PaymentScreen() {
         invoice_number: invoiceInput.trim(),
       });
       if (res.success) {
+        await refreshUser();
+        updateUser({
+          is_member: true,
+          membership_status: 'active',
+          membership_plan_type: 'ai_builder',
+        });
         setStep(3);
       } else {
         throw new Error(res.error || 'Invalid invoice number');
