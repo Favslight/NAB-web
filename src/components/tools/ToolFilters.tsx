@@ -63,7 +63,7 @@ export default function ToolFilters({ filters, onChange, totalCount, filteredCou
         </div>
 
         {/* Toggle chips */}
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 overflow-x-auto pb-1 sm:pb-0">
           <button
             onClick={() => update({ accessibleOnly: !filters.accessibleOnly })}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-medium transition-all duration-200
@@ -105,7 +105,7 @@ export default function ToolFilters({ filters, onChange, totalCount, filteredCou
       </div>
 
       {/* Result count + clear */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
         <span>
           Showing <span className="text-white font-medium">{filteredCount}</span> of{' '}
           <span className="text-white font-medium">{totalCount}</span> tools

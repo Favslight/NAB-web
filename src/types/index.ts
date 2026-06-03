@@ -83,10 +83,11 @@ export interface Referral {
 }
 
 export interface ReferralStats {
-  total_referrals: number;
-  converted_referrals: number;
-  pending_referrals: number;
-  total_rewards: number;
+  total_count: number;
+  signed_up_count: number;
+  paid_count: number;
+  rewarded_count: number;
+  active_count: number;
   referral_code: string;
   referral_link: string;
 }

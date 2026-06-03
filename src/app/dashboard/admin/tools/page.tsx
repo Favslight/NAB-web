@@ -186,13 +186,13 @@ export default function AdminToolsPage() {
         {/* Create/Edit Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border rounded-xl w-full max-w-lg overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-border flex justify-between items-center">
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border rounded-xl w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto shadow-2xl">
+              <div className="p-4 sm:p-6 border-b border-border flex justify-between items-center">
                 <h2 className="text-xl font-bold text-white">{currentTool?.id ? 'Edit' : 'Create'} AI Tool</h2>
                 <button onClick={() => setIsModalOpen(false)}><X className="w-5 h-5 text-muted-foreground hover:text-white" /></button>
               </div>
-              <form onSubmit={handleCreateOrUpdate} className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleCreateOrUpdate} className="p-4 sm:p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Tool Name*</label>
                     <Input value={currentTool?.name || ''} onChange={(e) => setCurrentTool({...currentTool, name: e.target.value})} placeholder="e.g. AI Videos" required />
@@ -206,7 +206,7 @@ export default function AdminToolsPage() {
                   <label className="text-sm font-medium">Description</label>
                   <Input value={currentTool?.description || ''} onChange={(e) => setCurrentTool({...currentTool, description: e.target.value})} placeholder="Short description of the tool" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Category</label>
                     <Input value={currentTool?.category || ''} onChange={(e) => setCurrentTool({...currentTool, category: e.target.value})} placeholder="e.g. Video & Film" />
@@ -224,7 +224,7 @@ export default function AdminToolsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="flex items-center gap-6 py-2">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 py-2">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={currentTool?.featured || false} onChange={(e) => setCurrentTool({...currentTool, featured: e.target.checked})} />
                     <span className="text-sm">Featured Tool</span>
@@ -234,7 +234,7 @@ export default function AdminToolsPage() {
                     <span className="text-sm">Active & Visible</span>
                   </label>
                 </div>
-                <div className="pt-4 flex gap-3">
+                <div className="pt-4 flex flex-col sm:flex-row gap-3">
                   <Button type="button" variant="ghost" className="flex-1" onClick={() => setIsModalOpen(false)}>Cancel</Button>
                   <Button type="submit" className="flex-1 btn-neon" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

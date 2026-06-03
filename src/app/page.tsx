@@ -33,9 +33,9 @@ export default function Home() {
         <div className="absolute inset-0 pattern-overlay opacity-30" />
         
         {/* AI-themed glow effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-56 h-56 sm:w-96 sm:h-96 bg-emerald/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-56 h-56 sm:w-96 sm:h-96 bg-cyan/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 sm:w-[600px] sm:h-[600px] bg-emerald/5 rounded-full blur-3xl" />
         
         {/* Circuit-like decorative lines */}
         <svg className="absolute top-20 left-10 w-32 h-32 text-emerald/20" viewBox="0 0 100 100">
@@ -296,8 +296,8 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/membership" className="inline-block">
-                  <Button size="lg" className="btn-neon text-sm sm:text-base px-4 sm:px-6 py-5 min-h-[44px]">
+              <Link href="/membership" className="block sm:inline-block">
+                  <Button size="lg" className="btn-neon w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6 py-5 min-h-[44px]">
                     Learn More About Membership
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" size={20} />
                   </Button>

@@ -79,17 +79,17 @@ export default function MembershipPage() {
 
         <div>
           <Card className={`glass ${isActive ? 'border-emerald/30' : 'border-gold/30'}`}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-4 min-w-0">
                   <div className={`p-3 rounded-full ${isActive ? 'bg-emerald/20' : 'bg-gold/20'}`}>
                     <CreditCard className={isActive ? 'text-emerald' : 'text-gold'} size={24} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-lg font-semibold text-white">
                       {isActive ? 'Active Membership' : 'Membership Pending'}
                     </div>
-                    <div className="text-text">ID: {user?.id_no || 'NAB-XXX-0000'}</div>
+                    <div className="text-text break-all">ID: {user?.id_no || 'NAB-XXX-0000'}</div>
                   </div>
                 </div>
                 <Badge className={isActive ? 'bg-emerald/20 text-emerald' : 'bg-gold/20 text-gold'}>
@@ -120,7 +120,7 @@ export default function MembershipPage() {
                     Complete your payment to activate your membership
                   </p>
                   <Button
-                    className="btn-neon"
+                    className="btn-neon w-full sm:w-auto"
                     onClick={handleCompletePayment}
                     disabled={paymentLoading}
                   >
@@ -168,8 +168,8 @@ export default function MembershipPage() {
               ) : (
                 <div className="space-y-3">
                   {history.map((tx, i) => (
-                    <div key={tx.id ?? i} className="p-3 glass rounded-lg flex items-center justify-between">
-                      <div>
+                    <div key={tx.id ?? i} className="p-3 glass rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="min-w-0">
                         <div className="font-medium text-white">
                           {tx.transaction_type ?? 'Payment'}
                         </div>
@@ -179,7 +179,7 @@ export default function MembershipPage() {
                           </div>
                         )}
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <div className="font-medium text-white">
                           ₦{(tx.amount ?? 0).toLocaleString()}
                         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -30,12 +30,23 @@ export default function SignupPage() {
   const { register } = useAuth();
   const router = useRouter();
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const referralCode = params.get('ref') || '';
+    if (referralCode) {
+      setFormData((current) => ({ ...current, referral_code: referralCode }));
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      const result = await register(formData);
+      const result = await register({
+        ...formData,
+        referral_code: formData.referral_code.trim() || undefined,
+      });
       
       // Show backend message
       if (result?.message) {
@@ -67,7 +78,7 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
+    <main className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       <Navbar />
       <div className="flex-1 flex items-center justify-center pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 md:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 pattern-overlay opacity-30 pointer-events-none" />

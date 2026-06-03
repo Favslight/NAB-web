@@ -15,14 +15,21 @@ type ReferralMe = {
   referral_code: string;
   referral_link: string;
   stats?: {
-    clicked: number;
-    signed_up: number;
-    paid: number;
-    rewarded: number;
-    total_rewards: number;
+    total_count?: number;
+    signed_up_count?: number;
+    paid_count?: number;
+    rewarded_count?: number;
+    active_count?: number;
+    clicked?: number;
+    signed_up?: number;
+    paid?: number;
+    rewarded?: number;
+    total_rewards?: number;
   };
   referrals?: Array<{
     referred_name?: string;
+    referred_status?: string;
+    referred_membership_plan_type?: string;
     signup_date?: string;
     status?: string;
     reward_amount?: number;
@@ -74,42 +81,45 @@ export default function ReferralsPage() {
 
   const stats = referralData?.stats;
   const referrals = referralData?.referrals ?? [];
+  const signedUpCount = stats?.signed_up_count ?? stats?.signed_up ?? 0;
+  const activeCount = stats?.active_count ?? 0;
+  const rewardedCount = stats?.rewarded_count ?? stats?.rewarded ?? 0;
 
   return (
     <ProtectedRoute>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8 max-w-full overflow-x-hidden">
         <div>
-          <h1 className="text-3xl font-bold font-display text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold font-display text-white mb-2">
             Referral Center
           </h1>
-          <p className="text-text">
+          <p className="text-sm sm:text-base text-text">
             Earn rewards for every new member you refer
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <Card className="glass">
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-emerald">
-                    {stats?.signed_up ?? 0}
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-2xl sm:text-3xl font-bold text-emerald">
+                    {signedUpCount}
                   </div>
-                  <div className="text-sm text-text">Total Referrals</div>
+                  <div className="text-sm text-text">Signed Up</div>
                 </CardContent>
               </Card>
               <Card className="glass">
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-cyan">
-                    ₦{(stats?.total_rewards ?? 0).toLocaleString()}
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-2xl sm:text-3xl font-bold text-cyan">
+                    {activeCount}
                   </div>
-                  <div className="text-sm text-text">Total Earnings</div>
+                  <div className="text-sm text-text">Active</div>
                 </CardContent>
               </Card>
               <Card className="glass">
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-gold">
-                    {stats?.rewarded ?? 0}
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-2xl sm:text-3xl font-bold text-gold">
+                    {rewardedCount}
                   </div>
                   <div className="text-sm text-text">Rewarded</div>
                 </CardContent>
@@ -118,25 +128,28 @@ export default function ReferralsPage() {
 
             <Card className="glass">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
                   <Share2 className="text-emerald" size={20} />
                   Share Your Referral Link
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="glass rounded-lg p-4 flex items-center justify-between gap-2">
-                  <code className="text-emerald text-sm truncate flex-1">{referralLink}</code>
+                <div className="glass rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <code className="text-emerald text-xs sm:text-sm break-all flex-1">
+                    {referralLink || 'Loading referral link...'}
+                  </code>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(referralLink)}
+                    disabled={!referralLink}
                     className="text-emerald shrink-0"
                   >
                     <Copy size={16} />
                   </Button>
                 </div>
-                <div className="glass rounded-lg p-4 flex items-center justify-between">
-                  <code className="text-cyan text-sm font-mono">{referralCode}</code>
+                <div className="glass rounded-lg p-3 sm:p-4 flex items-center justify-between gap-2">
+                  <code className="text-cyan text-xs sm:text-sm font-mono break-all">{referralCode}</code>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -151,36 +164,45 @@ export default function ReferralsPage() {
 
             <Card className="glass">
               <CardHeader>
-                <CardTitle className="text-white">Referral History</CardTitle>
+                <CardTitle className="text-white text-base sm:text-lg">Referral History</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {referrals.length === 0 ? (
                     <p className="text-sm text-text">No referrals yet. Share your link to get started.</p>
                   ) : (
-                    referrals.map((ref, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 glass rounded-lg">
-                        <div>
+                    referrals.map((ref, i) => {
+                      const status = ref.referred_status ?? ref.status ?? '—';
+                      const isActive = status === 'membership_active';
+                      return (
+                      <div key={i} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 glass rounded-lg">
+                        <div className="min-w-0">
                           <div className="font-medium text-white">{ref.referred_name ?? '—'}</div>
                           {ref.signup_date && (
                             <div className="text-sm text-text">
                               {new Date(ref.signup_date).toLocaleDateString()}
                             </div>
                           )}
+                          {ref.referred_membership_plan_type && (
+                            <div className="text-xs text-text/70 capitalize">
+                              {ref.referred_membership_plan_type.replaceAll('_', ' ')}
+                            </div>
+                          )}
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right">
                           {typeof ref.reward_amount === 'number' && (
                             <div className="font-medium text-white">₦{ref.reward_amount.toLocaleString()}</div>
                           )}
                           <Badge
-                            variant={ref.status === 'rewarded' ? 'default' : 'outline'}
-                            className={ref.status === 'rewarded' ? 'bg-emerald/20 text-emerald' : 'text-gold'}
+                            variant={isActive ? 'default' : 'outline'}
+                            className={isActive ? 'bg-emerald/20 text-emerald' : 'text-gold'}
                           >
-                            {ref.status ?? '—'}
+                            {isActive ? 'Active' : status.replaceAll('_', ' ')}
                           </Badge>
                         </div>
                       </div>
-                    ))
+                    );
+                    })
                   )}
                 </div>
               </CardContent>
@@ -190,7 +212,7 @@ export default function ReferralsPage() {
           <div>
             <Card className="glass">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-white flex items-center gap-2 text-base sm:text-lg">
                   <Award className="text-gold" size={20} />
                   Top Referrers
                 </CardTitle>

@@ -30,11 +30,16 @@ import type { Training } from '@/types';
 
 interface ReferralDashboard {
   stats?: {
-    clicked: number;
-    signed_up: number;
-    paid: number;
-    rewarded: number;
-    total_rewards: number;
+    total_count?: number;
+    signed_up_count?: number;
+    paid_count?: number;
+    rewarded_count?: number;
+    active_count?: number;
+    clicked?: number;
+    signed_up?: number;
+    paid?: number;
+    rewarded?: number;
+    total_rewards?: number;
   };
 }
 
@@ -149,6 +154,8 @@ export default function DashboardPage() {
 
   const primaryTraining = useMemo(() => trainings?.[0], [trainings]);
   const secondaryTraining = useMemo(() => trainings?.[1], [trainings]);
+  const signedUpReferrals =
+    referralData?.stats?.signed_up_count ?? referralData?.stats?.signed_up ?? 0;
 
   const stats = useMemo(
     () => [
@@ -160,7 +167,7 @@ export default function DashboardPage() {
       },
       {
         label: 'Referrals',
-        value: referralData?.stats?.signed_up?.toString() ?? '0',
+        value: signedUpReferrals.toString(),
         icon: Users,
         color: 'text-cyan',
       },
@@ -183,7 +190,7 @@ export default function DashboardPage() {
         color: 'text-emerald',
       },
     ],
-    [user, referralData, primaryTraining]
+    [user, referralData, primaryTraining, signedUpReferrals]
   );
 
   const primaryProgress =
@@ -196,11 +203,11 @@ export default function DashboardPage() {
       <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold font-display text-white">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold font-display text-white break-words">
               Welcome back, {user?.full_name?.split(' ')[0] || 'Builder'}!
               {isAdmin && (
-                <Badge className="ml-3 bg-purple/20 text-purple border-purple/30">
+                <Badge className="mt-2 sm:mt-0 sm:ml-3 bg-purple/20 text-purple border-purple/30">
                   <Shield className="mr-1" size={14} />
                   {isSuperAdmin ? 'Super Admin' : 'State Admin'}
                 </Badge>
@@ -215,11 +222,10 @@ export default function DashboardPage() {
             </p>
           </div>
           {!isSuperAdmin && (
-            <Link href="/dashboard/referrals">
-              <Button className="btn-neon">
+            <Link href="/dashboard/referrals" className="w-full md:w-auto">
+              <Button className="btn-neon w-full md:w-auto">
                 <Sparkles className="mr-2" size={18} />
-                Refer &amp; Earn ₦
-                {(referralData?.stats?.total_rewards ?? 5000).toLocaleString()}
+                Refer &amp; Earn
               </Button>
             </Link>
           )}
@@ -227,18 +233,18 @@ export default function DashboardPage() {
 
         {/* Regular User Stats - Hidden for Super Admin */}
         {!isSuperAdmin && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <Card key={stat.label} className="glass card-hover">
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className={`p-2 rounded-lg bg-midnight-light ${stat.color}`}>
                         <Icon size={20} />
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-white break-words">{stat.value}</div>
                     <div className="text-sm text-text">{stat.label}</div>
                   </CardContent>
                 </Card>
@@ -256,7 +262,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Admin Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <Card className="glass card-hover border-purple/20">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-3">

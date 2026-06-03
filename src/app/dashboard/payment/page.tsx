@@ -89,19 +89,19 @@ export default function PaymentScreen() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto py-8">
+      <div className="max-w-3xl mx-auto py-6 sm:py-8 max-w-full overflow-x-hidden">
         <StaggerReveal>
           <div className="mb-8">
-            <h1 className="text-3xl font-bold font-display text-white mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold font-display text-white mb-2">
               Membership Payment
             </h1>
-            <p className="text-text">
+            <p className="text-sm sm:text-base text-text">
               Complete your membership payment via secure bank transfer
             </p>
           </div>
 
           <Card className="glass border-emerald/30">
-            <CardContent className="p-6 sm:p-8">
+            <CardContent className="p-4 sm:p-6 md:p-8">
               {step === 1 && (
                 <div className="text-center py-8">
                   <div className="w-16 h-16 bg-emerald/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -116,7 +116,7 @@ export default function PaymentScreen() {
                   <Button 
                     onClick={initiatePayment} 
                     disabled={loading}
-                    className="btn-neon min-w-[200px]"
+                    className="btn-neon w-full sm:w-auto sm:min-w-[200px]"
                     size="lg"
                   >
                     {loading ? 'Processing...' : 'Proceed to Payment'}
@@ -134,8 +134,8 @@ export default function PaymentScreen() {
                     </p>
                   </div>
                   
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="glass-strong rounded-xl p-5 border border-border">
+                  <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="glass-strong rounded-xl p-4 sm:p-5 border border-border">
                       <div className="flex items-center gap-3 mb-4">
                         <Building className="text-cyan w-5 h-5" />
                         <h4 className="font-semibold text-white">Bank Details</h4>
@@ -151,8 +151,8 @@ export default function PaymentScreen() {
                         </div>
                         <div>
                           <span className="text-text/70 block text-xs">Account Number</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-white font-medium text-lg tracking-wider">{paymentData.bank.accountNumber}</span>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-white font-medium text-base sm:text-lg tracking-wider break-all">{paymentData.bank.accountNumber}</span>
                             <button 
                               onClick={() => copyToClipboard(paymentData.bank.accountNumber, 'account')}
                               className="text-emerald hover:text-emerald/80 transition-colors"
@@ -165,14 +165,14 @@ export default function PaymentScreen() {
                       </div>
                     </div>
 
-                    <div className="glass-strong rounded-xl p-5 border border-emerald/30 relative overflow-hidden">
+                    <div className="glass-strong rounded-xl p-4 sm:p-5 border border-emerald/30 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-1 h-full bg-emerald" />
                       <div className="flex items-center gap-3 mb-4">
                         <ShieldCheck className="text-emerald w-5 h-5" />
                         <h4 className="font-semibold text-white">Your Invoice Number</h4>
                       </div>
-                      <div className="bg-background/50 rounded-lg p-4 flex items-center justify-between mb-3 border border-border">
-                        <span className="text-emerald font-mono font-bold text-lg">{paymentData.reference}</span>
+                      <div className="bg-background/50 rounded-lg p-3 sm:p-4 flex items-center justify-between gap-2 mb-3 border border-border">
+                        <span className="text-emerald font-mono font-bold text-sm sm:text-lg break-all">{paymentData.reference}</span>
                         <button 
                           onClick={() => copyToClipboard(paymentData.reference, 'invoice')}
                           className="text-emerald hover:text-emerald/80 transition-colors p-2 rounded-md hover:bg-emerald/10"
@@ -199,7 +199,7 @@ export default function PaymentScreen() {
                       <Button 
                         onClick={confirmPayment} 
                         disabled={loading || !invoiceInput.trim()}
-                        className="btn-neon min-w-[200px]"
+                        className="btn-neon w-full sm:w-auto sm:min-w-[200px]"
                       >
                         {loading ? 'Confirming...' : 'I Have Made The Transfer'}
                       </Button>
