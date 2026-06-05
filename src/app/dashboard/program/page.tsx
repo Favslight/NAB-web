@@ -93,7 +93,7 @@ export default function DashboardProgramPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="responsive-page">
       {/* Header */}
       <div className="flex items-center gap-4">
         <div>
@@ -137,13 +137,13 @@ export default function DashboardProgramPage() {
       {!hasApplied ? (
         <Card className="glass">
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <CardTitle className="text-white">Apply for the Program</CardTitle>
               <div className="flex items-center gap-2">
                 {[1, 2, 3].map((s) => (
                   <div
                     key={s}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-medium ${
                       s === step
                         ? 'bg-emerald text-white'
                         : s < step
@@ -254,7 +254,7 @@ export default function DashboardProgramPage() {
                 </div>
                 
                 <div className="glass rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-text">Program Fee</span>
                     <span className="text-2xl font-bold text-cyan">₦250,000</span>
                   </div>
@@ -267,19 +267,19 @@ export default function DashboardProgramPage() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-4">
+            <div className="grid grid-cols-1 gap-3 pt-4 sm:grid-cols-2">
               <Button
                 variant="outline"
                 onClick={prevStep}
                 disabled={step === 1}
-                className="border-emerald/50 text-emerald hover:bg-emerald/10"
+                className="w-full border-emerald/50 text-emerald hover:bg-emerald/10"
               >
                 Previous
               </Button>
               <Button
                 onClick={nextStep}
                 disabled={isSubmitting}
-                className="btn-neon-cyan"
+                className="btn-neon-cyan w-full"
               >
                 {isSubmitting ? (
                   'Submitting...'
@@ -301,9 +301,9 @@ export default function DashboardProgramPage() {
       ) : (
         <Card className="glass border-emerald/30">
           <CardContent className="p-6">
-            <div className="flex items-center gap-3 text-emerald">
+            <div className="flex min-w-0 items-start gap-3 text-emerald">
               <Check className="w-6 h-6" />
-              <div>
+              <div className="min-w-0">
                 <div className="font-semibold">Application Submitted</div>
                 <div className="text-sm text-text">We&apos;ll review your application and get back to you soon.</div>
               </div>
@@ -362,7 +362,7 @@ export default function DashboardProgramPage() {
       {/* Locked Courses Section */}
       <Card className="glass">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle className="text-white flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-emerald" />
               Program Courses

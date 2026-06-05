@@ -94,9 +94,9 @@ export default function AdminPaymentsPage() {
 
   return (
     <ProtectedRoute requireSuperAdmin>
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
+      <div className="responsive-page">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="min-w-0">
             <h1 className="text-2xl font-bold font-display text-white">Manual Payments</h1>
             <p className="text-text text-sm mt-1">Review and manage manual bank transfers.</p>
           </div>
@@ -104,7 +104,7 @@ export default function AdminPaymentsPage() {
             variant="outline" 
             onClick={() => fetchPayments(activeTab)}
             disabled={loading}
-            className="border-border text-text hover:text-white"
+            className="w-full border-border text-text hover:text-white sm:w-auto"
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -113,8 +113,8 @@ export default function AdminPaymentsPage() {
 
         <Card className="glass border-border">
           <CardHeader className="pb-4">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="bg-midnight-light border border-border">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="w-full bg-midnight-light border border-border sm:w-fit">
                 <TabsTrigger value="pending" className="data-[state=active]:bg-emerald/20 data-[state=active]:text-emerald">
                   Pending Review
                 </TabsTrigger>
@@ -138,8 +138,8 @@ export default function AdminPaymentsPage() {
                 <p>No payments found in this category.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
+              <div className="responsive-table">
+                <table className="w-full min-w-[780px] text-sm text-left">
                   <thead className="text-xs text-text/70 uppercase bg-midnight-light/50 border-b border-border">
                     <tr>
                       <th className="px-4 py-3 font-medium">User</th>

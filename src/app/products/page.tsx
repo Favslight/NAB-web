@@ -167,12 +167,12 @@ export default function ProductsPage() {
                     <p className="text-text text-xs sm:text-sm mb-3 sm:mb-4">
                       {product.description}
                     </p>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <span className="text-sm text-text/60">
                         {product.likes} likes
                       </span>
-                      <Link href={`/products/${product.id}`}>
-                        <Button variant="ghost" size="sm" className="text-emerald hover:text-emerald hover:bg-emerald/10">
+                      <Link href={`/products/${product.id}`} className="w-full sm:w-auto">
+                        <Button variant="ghost" size="sm" className="w-full text-emerald hover:text-emerald hover:bg-emerald/10 sm:w-auto">
                           View Project
                           <ArrowUpRight size={16} className="ml-1" />
                         </Button>
@@ -196,7 +196,7 @@ export default function ProductsPage() {
             Submit your AI product to the NAB showcase and get discovered by investors and users.
           </p>
           <Link href="/dashboard/products">
-            <Button size="lg" className="btn-neon min-h-[44px] px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base">
+            <Button size="lg" className="btn-neon min-h-[44px] w-full px-6 py-5 text-sm sm:w-auto sm:px-8 sm:py-6 sm:text-base">
               Submit Your Product
             </Button>
           </Link>

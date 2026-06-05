@@ -57,13 +57,13 @@ export default function AdminAuditLogsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="p-2 rounded-lg bg-rose/20">
             <FileText className="text-rose" size={24} />
           </div>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-bold font-display text-white">Audit Logs</h1>
             <p className="text-text text-sm">Track all administrative actions</p>
           </div>
@@ -83,8 +83,8 @@ export default function AdminAuditLogsPage() {
                 <p>No audit logs found</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="responsive-table">
+                <table className="w-full min-w-[760px]">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left py-3 px-4 text-text text-sm font-medium">Admin</th>
@@ -98,9 +98,9 @@ export default function AdminAuditLogsPage() {
                     {logs.map((log) => (
                       <tr key={log.id} className="border-b border-border/50 hover:bg-midnight-light/50">
                         <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex min-w-0 items-center gap-2">
                             <Shield className="text-purple" size={14} />
-                            <span className="text-white">{log.admin_name}</span>
+                            <span className="text-white safe-text">{log.admin_name}</span>
                           </div>
                         </td>
                         <td className="py-3 px-4">
@@ -115,7 +115,7 @@ export default function AdminAuditLogsPage() {
                         </td>
                         <td className="py-3 px-4">
                           {log.new_values_json && (
-                            <span className="text-text text-xs truncate max-w-xs">
+                            <span className="block max-w-xs truncate text-xs text-text">
                               {log.new_values_json.slice(0, 50)}...
                             </span>
                           )}
@@ -130,11 +130,11 @@ export default function AdminAuditLogsPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                  <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-text text-sm">
                       Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"

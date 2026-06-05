@@ -76,14 +76,14 @@ export default function UpgradeModal({ open, onClose, targetPlan }: UpgradeModal
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 max-w-2xl mx-auto
-                       bg-card border border-border rounded-2xl p-6 sm:p-8
+            className="fixed inset-x-3 top-1/2 z-50 mx-auto max-h-[calc(100vh-1.5rem)] max-w-2xl -translate-y-1/2 overflow-y-auto
+                       rounded-2xl border border-border bg-card p-4 sm:inset-x-4 sm:p-8
                        shadow-[0_0_80px_rgba(0,0,0,0.5)]"
           >
             {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold font-display text-white mb-1">
+            <div className="mb-6 flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-xl font-bold font-display text-white mb-1 sm:text-2xl">
                   Unlock the{' '}
                   <span className="text-gradient">AI Launchpad</span>
                 </h2>
@@ -93,14 +93,14 @@ export default function UpgradeModal({ open, onClose, targetPlan }: UpgradeModal
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-white transition-colors"
+                className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Plans */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {plans.map((plan) => {
                 const Icon = plan.icon;
                 const isHighlighted = targetPlan === plan.id;
@@ -108,7 +108,7 @@ export default function UpgradeModal({ open, onClose, targetPlan }: UpgradeModal
                   <motion.div
                     key={plan.id}
                     whileHover={{ scale: 1.02 }}
-                    className={`relative rounded-xl border p-4 transition-all duration-300 cursor-pointer
+                    className={`relative min-w-0 cursor-pointer rounded-xl border p-4 transition-all duration-300
                       ${isHighlighted ? `${plan.borderColor} ${plan.bgColor} ${plan.glowColor}` : 'border-border bg-muted/20 hover:border-border/70'}`}
                     onClick={handleUpgrade}
                   >

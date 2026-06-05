@@ -55,9 +55,9 @@ export default function ProductSubmissionPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold font-display text-white mb-2">
+      <div className="mx-auto w-full max-w-3xl overflow-x-hidden">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl font-bold font-display text-white mb-2 sm:text-3xl">
             Submit Your Product
           </h1>
           <p className="text-text">
@@ -70,7 +70,7 @@ export default function ProductSubmissionPage() {
           
         >
           <Card className="glass">
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="title">Product Name</Label>
@@ -145,7 +145,7 @@ export default function ProductSubmissionPage() {
 
                 <div className="space-y-2">
                   <Label>Product Images</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-emerald/50 transition-colors cursor-pointer">
+                  <div className="cursor-pointer rounded-lg border-2 border-dashed border-border p-4 text-center transition-colors hover:border-emerald/50 sm:p-8">
                     <div className="flex flex-col items-center">
                       <div className="w-16 h-16 rounded-full bg-midnight-light flex items-center justify-center mb-4">
                         <Upload className="text-emerald" size={24} />
@@ -157,11 +157,11 @@ export default function ProductSubmissionPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-4">
-                  <Button type="submit" className="btn-neon flex-1" disabled={submitting}>
+                <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:gap-4">
+                  <Button type="submit" className="btn-neon w-full sm:flex-1" disabled={submitting}>
                     {submitting ? 'Submitting...' : 'Submit Product'}
                   </Button>
-                  <Button type="button" variant="outline" className="border-border" disabled={submitting}>
+                  <Button type="button" variant="outline" className="w-full border-border sm:w-auto" disabled={submitting}>
                     Save as Draft
                   </Button>
                 </div>

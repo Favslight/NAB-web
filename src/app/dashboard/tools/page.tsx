@@ -118,7 +118,7 @@ export default function ToolsPage() {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="responsive-page max-w-7xl mx-auto">
 
           {/* ── Hero section ──────────────────────────────────────────────── */}
           <motion.section
@@ -126,7 +126,7 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="relative rounded-2xl overflow-hidden border border-border bg-card/50
-                       backdrop-blur-sm p-6 sm:p-8 lg:p-10"
+                       backdrop-blur-sm p-4 sm:p-6 lg:p-10"
           >
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald/50 to-transparent" />
 
@@ -140,7 +140,7 @@ export default function ToolsPage() {
                   </div>
                 </motion.div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-white mb-3 leading-tight">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-display text-white mb-3 leading-tight">
                   AI <span className="text-gradient">Launchpad</span>
                 </h1>
                 <p className="text-muted-foreground text-base sm:text-lg max-w-xl leading-relaxed">
@@ -148,7 +148,7 @@ export default function ToolsPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 lg:min-w-[380px]">
+              <div className="grid w-full grid-cols-1 min-[380px]:grid-cols-2 sm:grid-cols-3 lg:min-w-[320px] lg:grid-cols-2 xl:grid-cols-3 gap-3">
                 <div className="col-span-2 sm:col-span-1 lg:col-span-2 xl:col-span-1 rounded-xl border border-border bg-background/60 p-4">
                   <div className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-medium">Your Plan</div>
                   <div className="flex items-center gap-2">

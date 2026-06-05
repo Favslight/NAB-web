@@ -11,7 +11,7 @@ export default function WaitlistPage() {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="flex-1 flex items-center justify-center pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6">
+      <div className="flex flex-1 items-center justify-center overflow-x-hidden px-3 pb-8 pt-20 sm:px-6 sm:pb-12 sm:pt-24">
         <div className="absolute inset-0 pattern-overlay opacity-30 pointer-events-none" />
         <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-emerald/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-cyan/5 rounded-full blur-3xl pointer-events-none" />
@@ -20,10 +20,10 @@ export default function WaitlistPage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.08 }}
-          className="relative w-full max-w-md mx-auto"
+          className="relative mx-auto w-full max-w-md"
         >
           <Card className="glass-strong rounded-2xl sm:rounded-3xl glow-edge border border-border/50">
-            <CardContent className="p-6 sm:p-8 text-center">
+            <CardContent className="p-4 text-center sm:p-8">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -47,13 +47,13 @@ export default function WaitlistPage() {
                 href="https://chat.whatsapp.com/JNTQ9U1ixDZ2xL8tG1a3ED"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full p-4 rounded-xl bg-emerald/10 border border-emerald/30 hover:bg-emerald/20 transition-colors mb-6"
+                className="mb-6 block w-full rounded-xl border border-emerald/30 bg-emerald/10 p-3 transition-colors hover:bg-emerald/20 sm:p-4"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex min-w-0 items-center gap-3">
                   <div className="p-2 rounded-full bg-emerald/20 shrink-0">
                     <MessageCircle className="text-emerald" size={20} />
                   </div>
-                  <div className="text-left">
+                  <div className="min-w-0 text-left">
                     <p className="text-emerald font-medium text-sm sm:text-base">Join our WhatsApp Community</p>
                     <p className="text-text/60 text-xs sm:text-sm">Stay updated while you wait</p>
                   </div>
@@ -73,7 +73,7 @@ export default function WaitlistPage() {
 
               <div className="mt-6">
                 <Link href="/">
-                  <Button variant="outline" className="border-border text-sm">
+                  <Button variant="outline" className="w-full border-border text-sm sm:w-auto">
                     <ArrowLeft size={16} className="mr-2" />
                     Back to Home
                   </Button>

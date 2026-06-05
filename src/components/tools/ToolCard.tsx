@@ -83,7 +83,7 @@ export default function ToolCard({ tool, index, onUpgrade }: ToolCardProps) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.38, delay: index * 0.04, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`group relative rounded-xl border border-border bg-card/70 backdrop-blur-sm
+      className={`group relative min-w-0 rounded-xl border border-border bg-card/70 backdrop-blur-sm
                   transition-all duration-300 overflow-hidden flex flex-col ${planGlow}`}
     >
       {/* Ambient top glow strip */}
@@ -94,9 +94,9 @@ export default function ToolCard({ tool, index, onUpgrade }: ToolCardProps) {
       />
 
       {/* Card body */}
-      <div className="p-5 flex flex-col gap-4 flex-1">
+      <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start justify-between gap-3">
           <div className={`w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 ${iconBg}
                           group-hover:scale-110 transition-transform duration-300`}>
             <Icon className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ToolCard({ tool, index, onUpgrade }: ToolCardProps) {
         </div>
 
         {/* Name & category */}
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-white text-sm leading-snug mb-1 group-hover:text-gradient transition-all duration-300">
             {tool.name}
           </h3>

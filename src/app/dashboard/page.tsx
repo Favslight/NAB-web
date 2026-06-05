@@ -200,7 +200,7 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-8">
+      <div className="responsive-page">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="min-w-0">
@@ -433,7 +433,7 @@ export default function DashboardPage() {
             {/* Continue Learning - Hidden for Super Admin */}
             {!isSuperAdmin && (
               <Card className="glass">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <CardTitle className="text-white flex items-center gap-2">
                     <BookOpen className="text-cyan" size={20} />
                     Continue Learning
@@ -487,7 +487,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             {/* Recent Activity */}
             <Card className="glass">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <CardTitle className="text-white flex items-center gap-2">
                   <Bell className="text-gold" size={20} />
                   Recent Activity

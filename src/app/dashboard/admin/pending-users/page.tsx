@@ -86,14 +86,14 @@ export default function PendingUsersPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="p-2 rounded-lg bg-amber/20">
               <Clock className="text-amber" size={24} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold font-display text-white">Pending Approvals</h1>
               <p className="text-text text-sm">Review and approve new user registrations</p>
             </div>
@@ -102,7 +102,7 @@ export default function PendingUsersPage() {
             variant="outline"
             onClick={fetchPendingUsers}
             disabled={loading}
-            className="border-border"
+            className="w-full border-border sm:w-auto"
           >
             <RefreshCw size={18} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -141,16 +141,16 @@ export default function PendingUsersPage() {
                 {users.map((user) => (
                   <div
                     key={user.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-midnight-light/30 border border-border/50 hover:border-emerald/30 transition-colors"
+                    className="flex min-w-0 flex-col justify-between gap-4 rounded-lg border border-border/50 bg-midnight-light/30 p-3 transition-colors hover:border-emerald/30 sm:flex-row sm:items-center sm:p-4"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex min-w-0 items-start gap-3 sm:gap-4">
                       <Avatar className="w-12 h-12 border-2 border-emerald/30">
                         <AvatarImage src={user.avatar_url} />
                         <AvatarFallback className="bg-emerald/20 text-emerald">
                           {getInitials(user.full_name)}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
+                      <div className="min-w-0">
                         <h3 className="font-semibold text-white">{user.full_name}</h3>
                         <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-text">
                           <span className="flex items-center gap-1">
@@ -168,7 +168,7 @@ export default function PendingUsersPage() {
                             {user.state_name}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Badge variant="outline" className="text-amber border-amber/30 text-xs">
                             <Clock size={12} className="mr-1" />
                             {formatDate(user.created_at)}
@@ -182,7 +182,7 @@ export default function PendingUsersPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 sm:shrink-0">
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:shrink-0">
                       <Button
                         size="sm"
                         className="bg-emerald hover:bg-emerald/80"

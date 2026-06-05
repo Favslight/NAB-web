@@ -83,15 +83,15 @@ export default function StateActivitiesPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-8">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <Link href="/dashboard/state-hub">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-3xl font-bold font-display text-white mb-2">
               State Activities
             </h1>
@@ -111,7 +111,7 @@ export default function StateActivitiesPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <div className="flex items-center gap-2 text-text">
                   <Users className="w-4 h-4 text-emerald" />
                   <span>{myHub.member_count || 0} members</span>
@@ -141,7 +141,7 @@ export default function StateActivitiesPage() {
                     className={`glass ${isMyHub ? 'border-emerald/30' : ''}`}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <h3 className="font-bold text-white">
                           {hub.state_name || hub.name}
                         </h3>

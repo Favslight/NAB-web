@@ -153,7 +153,7 @@ export default function CommunityPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold font-display text-white mb-2">
@@ -179,7 +179,7 @@ export default function CommunityPage() {
               className="pl-10 bg-midnight-light border-border"
             />
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
             {categories.map((cat) => (
               <button
                 key={cat}

@@ -107,7 +107,7 @@ export default function ReferralsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6 sm:space-y-8 max-w-full overflow-x-hidden">
+      <div className="responsive-page">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold font-display text-white mb-2">
             Referral Center

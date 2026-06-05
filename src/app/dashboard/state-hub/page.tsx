@@ -94,7 +94,7 @@ export default function StateHubPage() {
   if (!myHub) {
     return (
       <ProtectedRoute>
-        <div className="space-y-8">
+        <div className="responsive-page">
           <div>
             <h1 className="text-3xl font-bold font-display text-white mb-2">
               State Hub
@@ -102,7 +102,7 @@ export default function StateHubPage() {
             <p className="text-text">Connect with AI builders in your state</p>
           </div>
           <Card className="glass">
-            <CardContent className="p-8 text-center">
+            <CardContent className="p-4 text-center sm:p-8">
               <MapPin className="w-12 h-12 text-emerald mx-auto mb-4" />
               <h2 className="text-xl font-bold text-white mb-2">
                 No State Hub Assigned
@@ -125,7 +125,7 @@ export default function StateHubPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-8">
+      <div className="responsive-page">
         <div>
           <h1 className="text-3xl font-bold font-display text-white mb-2">
             State Hub
@@ -135,11 +135,11 @@ export default function StateHubPage() {
 
         <Card className="glass-strong border-2 border-emerald/30">
           <CardHeader>
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
               <div className="p-3 rounded-full bg-emerald/20">
                 <MapPin className="text-emerald" size={24} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <CardTitle className="text-white text-2xl">
                   {userStateLabel} Hub
                 </CardTitle>
@@ -164,8 +164,8 @@ export default function StateHubPage() {
                 <div className="text-sm text-text">Next Event</div>
               </div>
             </div>
-            <div className="flex gap-3">
-              <Link href="/dashboard/state-hub/activities" className="flex-1">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/dashboard/state-hub/activities" className="w-full sm:flex-1">
                 <Button className="btn-neon w-full">
                   <Activity className="mr-2" size={18} />
                   View Events

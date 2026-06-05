@@ -3,11 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 
 export default function MaintenancePage() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <main className="flex min-h-screen items-center justify-center overflow-x-hidden bg-background p-3 sm:p-4">
+      <div className="w-full max-w-md">
         <Card className="glass border-cyan/20">
-          <CardContent className="p-8 text-center">
-            <div className="mx-auto w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mb-6">
+          <CardContent className="p-4 text-center sm:p-8">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 sm:h-20 sm:w-20">
               <Construction className="text-gold" size={40} />
             </div>
             
@@ -20,7 +20,7 @@ export default function MaintenancePage() {
               Please check back soon.
             </p>
 
-            <div className="flex items-center justify-center gap-2 text-sm text-text/60 mb-4">
+            <div className="mb-4 flex items-center justify-center gap-2 text-sm text-text/60">
               <Clock size={16} />
               <span>Expected to be back shortly</span>
             </div>
@@ -29,7 +29,7 @@ export default function MaintenancePage() {
               <p className="text-text/60 text-sm mb-2">Need urgent assistance?</p>
               <a 
                 href="mailto:support@aibuilders.ng" 
-                className="inline-flex items-center gap-2 text-emerald hover:text-emerald/80 transition-colors"
+                className="inline-flex max-w-full items-center gap-2 text-emerald transition-colors hover:text-emerald/80"
               >
                 <Mail size={16} />
                 <span>support@aibuilders.ng</span>

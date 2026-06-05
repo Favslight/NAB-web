@@ -132,27 +132,27 @@ export default function AdminUsersPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="p-2 rounded-lg bg-purple/20">
               <Users className="text-purple" size={24} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold font-display text-white">User Management</h1>
               <p className="text-text text-sm">
                 {isSuperAdmin ? 'Manage platform users and state representatives' : 'Manage users in your state'}
               </p>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative w-full md:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text" size={18} />
             <Input
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 w-full md:w-64 bg-midnight-light border-border"
+              className="w-full bg-midnight-light pl-10 border-border md:w-64"
             />
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function AdminUsersPage() {
         {/* Tabs */}
         {isSuperAdmin && (
           <Tabs value={view} onValueChange={setView} className="w-full">
-            <TabsList className="bg-midnight-light border border-border">
+            <TabsList className="w-full bg-midnight-light border border-border sm:w-fit">
               <TabsTrigger value="all" className="flex items-center gap-2">
                 <Users size={16} /> All Users
               </TabsTrigger>
@@ -187,8 +187,8 @@ export default function AdminUsersPage() {
             ) : (view === 'all' ? filteredUsers : filteredStateAdmins).length === 0 ? (
               <div className="text-center py-12 text-text">No users found</div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="responsive-table">
+                <table className="w-full min-w-[860px]">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left py-3 px-4 text-text text-sm font-medium">User</th>
@@ -204,11 +204,11 @@ export default function AdminUsersPage() {
                     {(view === 'all' ? filteredUsers : filteredStateAdmins).map((u) => (
                       <tr key={u.id} className="border-b border-border/50 hover:bg-midnight-light/50">
                         <td className="py-3 px-4">
-                          <div className="flex items-center gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-emerald/20 flex items-center justify-center">
                               <User className="text-emerald" size={14} />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <p className="text-white font-medium">{u.full_name}</p>
                               <p className="text-text text-sm">{u.email}</p>
                             </div>
@@ -303,11 +303,11 @@ export default function AdminUsersPage() {
 
             {/* Pagination - only for all users view */}
             {view === 'all' && totalPages > 1 && (
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+              <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-text text-sm">
                   Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"

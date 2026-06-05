@@ -67,13 +67,13 @@ export default function AdminApplicationsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="p-2 rounded-lg bg-gold/20">
             <CheckCircle className="text-gold" size={24} />
           </div>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-bold font-display text-white">Program Applications</h1>
             <p className="text-text text-sm">
               {isSuperAdmin ? 'Review all program applications' : 'Review applications for your state'}
@@ -96,16 +96,16 @@ export default function AdminApplicationsPage() {
                 {applications.map((app) => (
                   <div
                     key={app.id}
-                    className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-lg bg-midnight-light/50 border border-border"
+                    className="flex min-w-0 flex-col justify-between gap-4 rounded-lg border border-border bg-midnight-light/50 p-3 sm:p-4 md:flex-row md:items-center"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                       <div className="w-10 h-10 rounded-full bg-emerald/20 flex items-center justify-center">
                         <Clock className="text-emerald" size={18} />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-white font-medium">{app.applicant_name}</p>
                         <p className="text-text text-sm">{app.applicant_email}</p>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
                           <Badge variant="outline" className="text-gold border-gold/30">
                             {app.cohort_name}
                           </Badge>
@@ -115,7 +115,7 @@ export default function AdminApplicationsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-3 md:flex md:items-center">
                       <Button
                         size="sm"
                         className="bg-emerald hover:bg-emerald/80"
@@ -148,11 +148,11 @@ export default function AdminApplicationsPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-text text-sm">
                       Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"

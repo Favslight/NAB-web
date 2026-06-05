@@ -106,14 +106,14 @@ export default function AdminSettingsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="p-2 rounded-lg bg-emerald/20">
               <Settings className="text-emerald" size={24} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold font-display text-white">System Settings</h1>
               <p className="text-text text-sm">Configure platform-wide settings</p>
             </div>
@@ -122,7 +122,7 @@ export default function AdminSettingsPage() {
             variant="outline"
             onClick={loadSettings}
             disabled={loading}
-            className="border-border"
+            className="w-full border-border sm:w-auto"
           >
             <RefreshCw size={18} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -132,12 +132,12 @@ export default function AdminSettingsPage() {
         {/* Admin Approval Toggle */}
         <Card className="glass border-emerald/20">
           <CardContent className="p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 items-start gap-4">
                 <div className="p-3 rounded-lg bg-emerald/10">
                   <Shield className="text-emerald" size={24} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-semibold text-white text-lg">Require Admin Approval</h3>
                   <p className="text-text text-sm mt-1 max-w-xl">
                     When enabled, new users must be approved by an admin before they can log in.
@@ -145,7 +145,7 @@ export default function AdminSettingsPage() {
                   </p>
                 </div>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+              <label className="relative inline-flex w-full cursor-pointer items-center justify-between gap-3 sm:w-auto sm:justify-start shrink-0">
                 <input
                   type="checkbox"
                   checked={settings.find(s => s.key === 'require_admin_approval')?.value === 'true'}
@@ -194,8 +194,8 @@ export default function AdminSettingsPage() {
                 <p className="text-sm mt-1">Settings will appear here once added to the database</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="responsive-table">
+                <table className="w-full min-w-[760px]">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left py-3 px-4 text-text text-sm font-medium">Setting Key</th>
@@ -208,7 +208,7 @@ export default function AdminSettingsPage() {
                     {settings.map((setting) => (
                       <tr key={setting.key} className="border-b border-border/50 hover:bg-midnight-light/50">
                         <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex min-w-0 items-center gap-2">
                             <Badge variant="outline" className="text-cyan border-cyan/30 font-mono text-xs">
                               {setting.key}
                             </Badge>
@@ -223,7 +223,7 @@ export default function AdminSettingsPage() {
                               autoFocus
                             />
                           ) : (
-                            <span className="text-white font-mono text-sm">{setting.value}</span>
+                            <span className="text-white font-mono text-sm safe-text">{setting.value}</span>
                           )}
                         </td>
                         <td className="py-3 px-4 text-text text-sm">

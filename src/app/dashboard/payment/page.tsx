@@ -177,11 +177,11 @@ export default function PaymentScreen() {
                         <ShieldCheck className="text-emerald w-5 h-5" />
                         <h4 className="font-semibold text-white">Your Invoice Number</h4>
                       </div>
-                      <div className="bg-background/50 rounded-lg p-3 sm:p-4 flex items-center justify-between gap-2 mb-3 border border-border">
+                      <div className="mb-3 flex min-w-0 items-center justify-between gap-2 rounded-lg border border-border bg-background/50 p-3 sm:p-4">
                         <span className="text-emerald font-mono font-bold text-sm sm:text-lg break-all">{paymentData.reference}</span>
                         <button 
                           onClick={() => copyToClipboard(paymentData.reference, 'invoice')}
-                          className="text-emerald hover:text-emerald/80 transition-colors p-2 rounded-md hover:bg-emerald/10"
+                          className="shrink-0 rounded-md p-2 text-emerald transition-colors hover:bg-emerald/10 hover:text-emerald/80"
                         >
                           {copiedInvoice ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                         </button>

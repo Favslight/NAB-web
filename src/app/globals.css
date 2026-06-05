@@ -54,11 +54,70 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     max-width: 100%;
   }
+
+  #__next,
+  main,
+  section,
+  article,
+  header,
+  footer,
+  nav,
+  form {
+    max-width: 100%;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  a,
+  button,
+  label,
+  input,
+  textarea,
+  select,
+  td,
+  th {
+    overflow-wrap: anywhere;
+  }
+
+  table {
+    width: 100%;
+    min-width: max-content;
+  }
 }
 
 @layer utilities {
   .layout-shell {
-    @apply w-full max-w-sm sm:max-w-2xl lg:max-w-4xl mx-auto px-3 sm:px-4 md:px-6;
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .responsive-page {
+    @apply w-full max-w-full overflow-x-hidden space-y-6 sm:space-y-8;
+  }
+
+  .responsive-card-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+
+  .responsive-table {
+    @apply -mx-3 sm:mx-0 overflow-x-auto px-3 sm:px-0;
+  }
+
+  .safe-text {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   
   .glass {

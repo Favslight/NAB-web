@@ -140,7 +140,7 @@ export default function PostDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="mx-auto w-full max-w-4xl space-y-6 overflow-x-hidden">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link href="/dashboard/community">

@@ -34,7 +34,6 @@ import { useAuth } from '@/context/AuthContext';
 import GuestBanner from '@/components/auth/GuestBanner';
 import { getInitials } from '@/lib/utils';
 import Logo from '@/components/logo.png';
-import { BlockList } from 'net';
 
 // Regular user sidebar items
 const userSidebarItems = [
@@ -112,8 +111,8 @@ export default function DashboardLayout({
     : userSidebarItems;
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      <div className="p-6 border-b border-border">
+    <div className="flex h-full min-w-0 flex-col">
+      <div className="border-b border-border p-4 sm:p-6">
         <Link href="/" className="text-xl font-bold font-display text-gradient">
           AIBUILDERS.NG
         </Link>
@@ -141,7 +140,7 @@ export default function DashboardLayout({
               key={item.href}
               href={item.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              className={`flex min-w-0 items-center gap-3 rounded-lg px-3 py-3 transition-all sm:px-4 ${
                 isActive
                   ? isSuperAdmin
                     ? 'bg-purple/10 text-purple border border-purple/30'
@@ -151,14 +150,14 @@ export default function DashboardLayout({
                   : 'text-text hover:bg-midnight-light hover:text-white'
               }`}
             >
-              <Icon size={20} />
-              <span className="font-medium">{item.label}</span>
+              <Icon size={20} className="shrink-0" />
+              <span className="truncate font-medium">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-border">
+      <div className="border-t border-border p-3 sm:p-4">
         <div className="flex items-center gap-3 px-4 py-3 mb-2">
           <Avatar className="w-10 h-10 border-2 border-emerald/30">
             <AvatarImage src={user?.avatar_url} />
@@ -188,16 +187,16 @@ export default function DashboardLayout({
   );
 
   return (
-    <div className="min-h-screen bg-midnight flex">
+    <div className="flex min-h-screen w-full max-w-full overflow-x-hidden bg-midnight">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-64 glass border-r border-border fixed h-full">
+      <aside className="fixed hidden h-full w-64 max-w-full lg:block glass border-r border-border">
         <SidebarContent />
       </aside>
 
       {/* Mobile navbar + sidebar */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50">
         <div className="glass border-b border-border">
-          <div className="px-4 h-14 flex items-center justify-between">
+          <div className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4">
             <Link href="/" className="flex items-center gap-2 min-w-0">
               <div className="relative w-8 h-8 shrink-0">
                 <Image
@@ -228,7 +227,7 @@ export default function DashboardLayout({
               <SheetContent
                 side="left"
                 overlayClassName="top-14 z-40 bg-black/60 backdrop-blur-sm data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0"
-                className="top-14 h-[calc(100vh-3.5rem)] w-72 max-w-[85vw] p-0 glass border-r border-border rounded-none data-[state=open]:duration-500 data-[state=closed]:duration-300"
+                className="top-14 h-[calc(100vh-3.5rem)] w-[min(18rem,88vw)] p-0 glass border-r border-border rounded-none data-[state=open]:duration-500 data-[state=closed]:duration-300"
               >
                 <SidebarContent />
               </SheetContent>
@@ -238,9 +237,9 @@ export default function DashboardLayout({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 min-h-screen pt-14 lg:pt-0">
+      <main className="min-h-screen min-w-0 flex-1 pt-14 lg:ml-64 lg:pt-0">
         <GuestBanner />
-        <div className="p-6 lg:p-8">
+        <div className="w-full max-w-full overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 lg:p-8">
           {children}
         </div>
       </main>

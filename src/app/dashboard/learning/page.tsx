@@ -55,7 +55,7 @@ export default function LearningPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         <div>
           <h1 className="text-3xl font-bold font-display text-white mb-2">
             Learning Center

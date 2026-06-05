@@ -35,11 +35,11 @@ export default function ToolFilters({ filters, onChange, totalCount, filteredCou
   const hasActiveFilters = filters.search || filters.category !== 'All' || filters.accessibleOnly || filters.featuredOnly;
 
   return (
-    <div className="space-y-4">
+    <div className="w-full max-w-full space-y-4 overflow-x-hidden">
       {/* Search + toggle row */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search */}
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search AI tools…"
@@ -63,7 +63,7 @@ export default function ToolFilters({ filters, onChange, totalCount, filteredCou
         </div>
 
         {/* Toggle chips */}
-        <div className="flex gap-2 shrink-0 overflow-x-auto pb-1 sm:pb-0">
+        <div className="-mx-1 flex shrink-0 gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:px-0 sm:pb-0">
           <button
             onClick={() => update({ accessibleOnly: !filters.accessibleOnly })}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-medium transition-all duration-200
@@ -89,7 +89,7 @@ export default function ToolFilters({ filters, onChange, totalCount, filteredCou
       </div>
 
       {/* Category pills */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}

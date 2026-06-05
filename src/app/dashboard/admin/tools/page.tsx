@@ -92,13 +92,13 @@ export default function AdminToolsPage() {
 
   return (
     <ProtectedRoute requireSuperAdmin>
-      <div className="space-y-6">
+      <div className="responsive-page">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-3xl font-bold font-display text-white">Manage <span className="text-gradient">AI Tools</span></h1>
             <p className="text-muted-foreground">Configure tools, plans, and accessibility for builders.</p>
           </div>
-          <Button onClick={() => { setCurrentTool({ required_plan: 'ai_explorer', active: true, featured: false }); setIsModalOpen(true); }} className="btn-neon">
+          <Button onClick={() => { setCurrentTool({ required_plan: 'ai_explorer', active: true, featured: false }); setIsModalOpen(true); }} className="btn-neon w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" /> Add New Tool
           </Button>
         </div>
@@ -121,8 +121,8 @@ export default function AdminToolsPage() {
             ) : filteredTools.length === 0 ? (
               <div className="text-center py-20 text-muted-foreground">No tools found.</div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+              <div className="responsive-table">
+                <table className="w-full min-w-[760px] text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border text-muted-foreground text-sm">
                       <th className="py-4 px-4 font-medium">Tool</th>
@@ -136,16 +136,16 @@ export default function AdminToolsPage() {
                     {filteredTools.map((tool) => (
                       <tr key={tool.id} className="hover:bg-white/5 transition-colors group">
                         <td className="py-4 px-4">
-                          <div className="flex items-center gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center border border-border">
                               <LayoutGrid className="w-5 h-5 text-muted-foreground" />
                             </div>
-                            <div>
-                              <div className="font-semibold text-white flex items-center gap-2">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 font-semibold text-white safe-text">
                                 {tool.name}
                                 {tool.featured && <Star className="w-3 h-3 text-gold fill-gold" />}
                               </div>
-                              <div className="text-xs text-muted-foreground">/{tool.slug}</div>
+                              <div className="text-xs text-muted-foreground safe-text">/{tool.slug}</div>
                             </div>
                           </div>
                         </td>
@@ -165,7 +165,7 @@ export default function AdminToolsPage() {
                           )}
                         </td>
                         <td className="py-4 px-4 text-right">
-                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex justify-end gap-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                             <Button variant="ghost" size="icon" onClick={() => { setCurrentTool(tool); setIsModalOpen(true); }}>
                               <Edit2 className="w-4 h-4" />
                             </Button>
@@ -186,8 +186,8 @@ export default function AdminToolsPage() {
         {/* Create/Edit Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border rounded-xl w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto shadow-2xl">
-              <div className="p-4 sm:p-6 border-b border-border flex justify-between items-center">
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto rounded-xl border border-border bg-card shadow-2xl">
+              <div className="flex items-center justify-between gap-3 border-b border-border p-4 sm:p-6">
                 <h2 className="text-xl font-bold text-white">{currentTool?.id ? 'Edit' : 'Create'} AI Tool</h2>
                 <button onClick={() => setIsModalOpen(false)}><X className="w-5 h-5 text-muted-foreground hover:text-white" /></button>
               </div>

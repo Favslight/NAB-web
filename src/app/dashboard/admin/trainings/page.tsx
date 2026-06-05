@@ -162,19 +162,19 @@ export default function AdminTrainingsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="p-2 rounded-lg bg-cyan/20">
               <BookOpen className="text-cyan" size={24} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold font-display text-white">Training Management</h1>
               <p className="text-text text-sm">Create and manage learning content</p>
             </div>
           </div>
-          <Button onClick={() => setShowForm(!showForm)} className="btn-neon">
+          <Button onClick={() => setShowForm(!showForm)} className="btn-neon w-full sm:w-auto">
             <Plus size={18} className="mr-2" />
             {showForm ? 'Cancel' : 'New Training'}
           </Button>
@@ -246,16 +246,16 @@ export default function AdminTrainingsPage() {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex flex-col justify-end gap-2 sm:flex-row">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowForm(false)}
-                    className="border-border"
+                    className="w-full border-border sm:w-auto"
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="btn-neon" disabled={submitting}>
+                  <Button type="submit" className="btn-neon w-full sm:w-auto" disabled={submitting}>
                     {submitting ? 'Creating...' : 'Create Training'}
                   </Button>
                 </div>
@@ -283,9 +283,9 @@ export default function AdminTrainingsPage() {
                 {trainings.map((training) => (
                   <div
                     key={training.id}
-                    className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-lg bg-midnight-light/50 border border-border"
+                    className="flex min-w-0 flex-col justify-between gap-4 rounded-lg border border-border bg-midnight-light/50 p-3 sm:p-4 md:flex-row md:items-center"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex min-w-0 items-start gap-3 sm:gap-4">
                       <div className="w-16 h-16 rounded-lg bg-midnight flex items-center justify-center shrink-0 overflow-hidden">
                         {training.thumbnail_url ? (
                           <img
@@ -297,8 +297,8 @@ export default function AdminTrainingsPage() {
                           <Image className="text-text/50" size={24} />
                         )}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
+                      <div className="min-w-0">
+                        <div className="mb-1 flex flex-wrap items-center gap-2">
                           <h3 className="text-white font-medium">{training.title}</h3>
                           <Badge
                             variant="outline"
@@ -312,7 +312,7 @@ export default function AdminTrainingsPage() {
                           </Badge>
                         </div>
                         <p className="text-text text-sm line-clamp-2">{training.description || 'No description'}</p>
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Badge variant="outline" className={getAccessLevelColor(training.access_level)}>
                             {training.access_level}
                           </Badge>
@@ -327,8 +327,8 @@ export default function AdminTrainingsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <label className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-border bg-background hover:bg-midnight-light hover:text-white h-8 px-3">
+                    <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-3 md:flex md:flex-wrap md:items-center">
+                      <label className="inline-flex h-8 cursor-pointer items-center justify-center rounded-md border border-border bg-background px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-midnight-light hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                         <input
                           type="file"
                           accept="image/*"
@@ -368,11 +368,11 @@ export default function AdminTrainingsPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-text text-sm">
                       Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"

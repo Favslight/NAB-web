@@ -35,8 +35,8 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold font-display text-white mb-8">
+      <div className="mx-auto w-full max-w-3xl overflow-x-hidden">
+        <h1 className="mb-6 text-2xl font-bold font-display text-white sm:mb-8 sm:text-3xl">
           My Profile
         </h1>
 
@@ -53,7 +53,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="flex items-center gap-6 mb-6">
+                <div className="mb-6 flex flex-col items-center gap-4 text-center sm:flex-row sm:gap-6 sm:text-left">
                   <div className="relative">
                     <Avatar className="w-24 h-24 border-4 border-emerald/30">
                       <AvatarImage src={user?.avatar_url} />
@@ -68,11 +68,11 @@ export default function ProfilePage() {
                       <Camera size={16} />
                     </button>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-lg font-semibold text-white">
                       {user?.full_name || 'Loading...'}
                     </div>
-                    <div className="text-text flex items-center gap-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2 text-text sm:justify-start">
                       {user?.id_no || ''}
                       {user?.membership_status === 'active' && (
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald/20 text-emerald uppercase tracking-wider">
@@ -134,7 +134,7 @@ export default function ProfilePage() {
 
                 <Button
                   type="submit"
-                  className="btn-neon"
+                  className="btn-neon w-full sm:w-auto"
                   disabled={isLoading}
                 >
                   {isLoading ? (

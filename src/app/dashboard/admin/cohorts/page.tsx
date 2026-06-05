@@ -52,19 +52,19 @@ export default function AdminCohortsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
+      <div className="responsive-page">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="p-2 rounded-lg bg-cyan/20">
               <Layers className="text-cyan" size={24} />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold font-display text-white">Cohorts</h1>
               <p className="text-text text-sm">Manage AI program cohorts</p>
             </div>
           </div>
-          <Button onClick={() => setShowForm(!showForm)} className="btn-neon">
+          <Button onClick={() => setShowForm(!showForm)} className="btn-neon w-full sm:w-auto">
             <Plus size={18} className="mr-2" />
             {showForm ? 'Cancel' : 'New Cohort'}
           </Button>
@@ -134,16 +134,16 @@ export default function AdminCohortsPage() {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex flex-col justify-end gap-2 sm:flex-row">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowForm(false)}
-                    className="border-border"
+                    className="w-full border-border sm:w-auto"
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="btn-neon" disabled={submitting}>
+                  <Button type="submit" className="btn-neon w-full sm:w-auto" disabled={submitting}>
                     {submitting ? 'Creating...' : 'Create Cohort'}
                   </Button>
                 </div>

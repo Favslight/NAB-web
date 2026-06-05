@@ -117,7 +117,7 @@ export default function SettingsPage() {
         <Input
           id={setting.key}
           type="number"
-          className="max-w-xs"
+          className="w-full md:max-w-xs"
           value={setting.value}
           onChange={(e) => handleChange(setting.key, e.target.value)}
         />
@@ -127,7 +127,7 @@ export default function SettingsPage() {
     return (
       <Input
         id={setting.key}
-        className="max-w-md"
+        className="w-full md:max-w-md"
         value={setting.value}
         onChange={(e) => handleChange(setting.key, e.target.value)}
       />
@@ -136,7 +136,7 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="mx-auto w-full max-w-4xl space-y-6 overflow-x-hidden">
         <div>
           <h1 className="text-3xl font-bold font-display text-white mb-2">
             System Settings
@@ -161,10 +161,10 @@ export default function SettingsPage() {
                 {settings.map((setting) => (
                   <div
                     key={setting.id}
-                    className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border border-border/60 rounded-lg px-4 py-3 bg-midnight-light/40"
+                    className="flex min-w-0 flex-col gap-3 rounded-lg border border-border/60 bg-midnight-light/40 px-3 py-3 sm:px-4 md:flex-row md:items-center md:justify-between"
                   >
-                    <div className="space-y-1 max-w-xl">
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 space-y-1 md:max-w-xl">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="text-sm font-semibold text-white">
                           {setting.key}
                         </span>
@@ -178,11 +178,11 @@ export default function SettingsPage() {
                         </p>
                       )}
                     </div>
-                    <div className="flex flex-col items-start gap-2 md:items-end">
+                    <div className="flex w-full flex-col items-start gap-2 md:w-auto md:items-end">
                       {renderControl(setting)}
                       <Button
                         size="sm"
-                        className="mt-1"
+                        className="mt-1 w-full md:w-auto"
                         disabled={isSaving}
                         onClick={() => handleSave(setting)}
                       >

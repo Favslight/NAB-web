@@ -102,7 +102,7 @@ export default function NewPostPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-hidden">
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => router.back()}>
             <ArrowLeft size={20} />

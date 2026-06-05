@@ -114,7 +114,7 @@ export default function MembershipPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="mx-auto w-full max-w-4xl space-y-6 overflow-x-hidden sm:space-y-8">
         <div>
           <h1 className="text-3xl font-bold font-display text-white mb-2">
             Membership
