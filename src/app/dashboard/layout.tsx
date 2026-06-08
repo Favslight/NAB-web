@@ -237,7 +237,7 @@ export default function DashboardLayout({
       </header>
 
       {/* Main Content */}
-      <main className="min-h-screen min-w-0 flex-1 pt-14 lg:ml-64 lg:pt-0">
+      <main className="min-h-screen min-w-0 flex-1 pt-14 lg:ml-64 lg:w-[calc(100%-16rem)] lg:flex-none lg:pt-0">
         <GuestBanner />
         <div className="w-full max-w-full overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 lg:p-8">
           {children}

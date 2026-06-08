@@ -130,8 +130,8 @@ export default function ToolsPage() {
           >
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald/50 to-transparent" />
 
-            <div className="relative flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
-              <div className="flex-1 min-w-0">
+            <div className="relative flex min-w-0 flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+              <div className="min-w-0 flex-1">
                 <motion.div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald/30 bg-emerald/10">
                     <span className="text-xs font-semibold text-emerald tracking-wider uppercase">
@@ -148,8 +148,8 @@ export default function ToolsPage() {
                 </p>
               </div>
 
-              <div className="grid w-full grid-cols-1 min-[380px]:grid-cols-2 sm:grid-cols-3 lg:min-w-[320px] lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                <div className="col-span-2 sm:col-span-1 lg:col-span-2 xl:col-span-1 rounded-xl border border-border bg-background/60 p-4">
+              <div className="grid w-full min-w-0 grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3 lg:w-[420px] lg:flex-none lg:grid-cols-2 xl:w-[480px] xl:grid-cols-3">
+                <div className="col-span-1 min-[380px]:col-span-2 sm:col-span-1 lg:col-span-2 xl:col-span-1 rounded-xl border border-border bg-background/60 p-4">
                   <div className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-medium">Your Plan</div>
                   <div className="flex items-center gap-2">
                     <planMeta.icon className={`w-5 h-5 ${planMeta.color}`} />
