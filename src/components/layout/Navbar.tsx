@@ -30,22 +30,23 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full pt-3 sm:pt-4 md:pt-5">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full px-3 pt-3 sm:px-4 sm:pt-4 md:px-5 md:pt-5">
       <motion.nav
-        initial={{ opacity: 0, y: -16, x: 0 }}
-        animate={{ opacity: 1, y: 0, x: shiftLeftForAuthPages ? -30 : 0 }}
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
         className={`
-          layout-shell
+          w-full max-w-7xl mx-auto
           rounded-xl sm:rounded-2xl md:rounded-full
           glass border border-border/50
           transition-all duration-300 ease-out
+          ${shiftLeftForAuthPages ? 'translate-x-[12px] sm:translate-x-[9px]' : ''}
           ${scrolled ? 'ring-1 ring-emerald/30 shadow-[0_8px_32px_rgba(0,255,166,0.06)]' : ''}
         `}
       >
-        <div className="flex items-center justify-between h-12 sm:h-14 md:h-16">
-          <Link href="/" className="flex items-center gap-2 shrink-0 min-w-0">
-            <div className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10">
+        <div className="flex items-center justify-between gap-3 h-14 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6">
+          <Link href="/" className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 shrink-0">
               <Image
                 src={Logo}
                 alt="Nigerian AI Builders logo"
@@ -55,7 +56,7 @@ export default function Navbar() {
                 sizes="40px"
               />
             </div>
-            <span className="text-base sm:text-xl md:text-2xl font-bold font-display text-white-gradient-motion truncate">
+            <span className="text-sm sm:text-xl md:text-2xl font-bold font-display text-white-gradient-motion truncate">
               AIBUILDERS.NG
             </span>
           </Link>
@@ -87,7 +88,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2.5 rounded-xl text-text hover:bg-white/5 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="md:hidden p-2 rounded-xl text-text hover:bg-white/5 transition-colors h-10 w-10 shrink-0 flex items-center justify-center"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
